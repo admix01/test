@@ -37,7 +37,7 @@
   .orb2{top:520px;right:-60px;width:260px;height:260px;background:radial-gradient(circle at 40% 35%, rgba(255,255,255,.9), rgba(159,255,176,.45) 55%, transparent 80%);animation:float2 9s ease-in-out infinite}
   .orb3{bottom:60px;left:8%;width:160px;height:160px;background:radial-gradient(circle at 35% 30%, rgba(255,255,255,.9), rgba(255,127,191,.35) 55%, transparent 80%);animation:float1 8s ease-in-out infinite}
 
-  .wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:18px 20px 60px}
+  .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:18px 20px 60px}
 
   nav{
     display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
@@ -148,6 +148,12 @@
   .toggle2{display:flex;gap:10px;flex-wrap:wrap}
   .subnote{font-family:VT323,monospace;font-size:15px;color:var(--ink-soft);margin-top:6px}
   .scaledeg{font-family:'Press Start 2P',monospace;font-size:10px}
+
+  .toolgrid{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start;margin-top:8px}
+  @media (max-width:860px){ .toolgrid{grid-template-columns:1fr} }
+  .tool-sidebar{display:flex;flex-direction:column;gap:16px}
+  .tool-sidebar .glasscard, .tool-main .glasscard{margin-bottom:0}
+  .tool-sidebar .pillgrid .pill{padding:9px 13px;font-size:15px}
 </style>
 </head>
 <body>
@@ -182,116 +188,134 @@
   </div>
 
   <section id="tab-accords" class="tabpanel active">
-    <div class="glasscard">
-      <p class="card-title">1. NOTE FONDAMENTALE</p>
-      <div class="pillgrid" id="rootPicker"></div>
-    </div>
+    <div class="toolgrid">
+      <aside class="tool-sidebar">
+        <div class="glasscard">
+          <p class="card-title">NOTE FONDAMENTALE</p>
+          <div class="pillgrid" id="rootPicker"></div>
+        </div>
 
-    <div class="glasscard">
-      <p class="card-title">2. TYPE D'ACCORD</p>
-      <div class="pillgrid" id="qualityPicker"></div>
-    </div>
+        <div class="glasscard">
+          <p class="card-title">TYPE D'ACCORD</p>
+          <select class="gsel" id="qualitySelect"></select>
+        </div>
 
-    <div class="glasscard">
-      <p class="card-title">3. FORME (★ positions réelles tirées de tabs, puis formes CAGED théoriques)</p>
-      <div class="pillgrid" id="shapePicker"></div>
-    </div>
+        <div class="glasscard">
+          <p class="card-title">FORME (★ réelle, tirée de tabs · sinon CAGED)</p>
+          <div class="pillgrid" id="shapePicker"></div>
+        </div>
+      </aside>
 
-    <div class="glasscard">
-      <div class="fb-head">
-        <div class="chord-name" id="chordName">E MAJEUR</div>
-        <div class="position-label" id="positionLabel">position ouverte</div>
+      <div class="tool-main">
+        <div class="glasscard">
+          <div class="fb-head">
+            <div class="chord-name" id="chordName">E MAJEUR</div>
+            <div class="position-label" id="positionLabel">position ouverte</div>
+          </div>
+          <div class="fb-scroll">
+            <svg class="fretboard-svg" id="fretboard" xmlns="http://www.w3.org/2000/svg"></svg>
+          </div>
+          <div class="legend">
+            <div><b>○</b> corde à vide</div>
+            <div><b>✕</b> corde étouffée</div>
+            <div><b style="color:#ff2f8f">●</b> fondamentale</div>
+            <div><b>▍</b> barre</div>
+          </div>
+          <button class="playbtn" id="playBtn">♪ JOUER L'ACCORD</button>
+        </div>
       </div>
-      <div class="fb-scroll">
-        <svg class="fretboard-svg" id="fretboard" xmlns="http://www.w3.org/2000/svg"></svg>
-      </div>
-      <div class="legend">
-        <div><b>○</b> corde à vide</div>
-        <div><b>✕</b> corde étouffée</div>
-        <div><b style="color:#ff2f8f">●</b> fondamentale</div>
-        <div><b>▍</b> barre</div>
-      </div>
-      <button class="playbtn" id="playBtn">♪ JOUER L'ACCORD</button>
     </div>
   </section>
 
   <section id="tab-triades" class="tabpanel">
-    <div class="glasscard">
-      <p class="card-title">1. FONDAMENTALE</p>
-      <div class="pillgrid" id="triadRootPicker"></div>
-    </div>
+    <div class="toolgrid">
+      <aside class="tool-sidebar">
+        <div class="glasscard">
+          <p class="card-title">FONDAMENTALE</p>
+          <div class="pillgrid" id="triadRootPicker"></div>
+        </div>
 
-    <div class="glasscard">
-      <p class="card-title">2. QUALITÉ</p>
-      <div class="pillgrid" id="triadQualityPicker"></div>
-    </div>
+        <div class="glasscard">
+          <p class="card-title">QUALITÉ</p>
+          <div class="pillgrid" id="triadQualityPicker"></div>
+        </div>
 
-    <div class="glasscard">
-      <p class="card-title">3. GROUPE DE CORDES</p>
-      <div class="pillgrid" id="triadStringsPicker"></div>
-    </div>
+        <div class="glasscard">
+          <p class="card-title">CORDES</p>
+          <div class="pillgrid" id="triadStringsPicker"></div>
+        </div>
 
-    <div class="glasscard">
-      <p class="card-title">4. RENVERSEMENT &amp; POSITION</p>
-      <div class="pillgrid" id="triadPosPicker"></div>
-    </div>
+        <div class="glasscard">
+          <p class="card-title">RENVERSEMENT &amp; POSITION</p>
+          <select class="gsel" id="triadPosSelect"></select>
+        </div>
 
-    <div class="glasscard">
-      <p class="card-title">5. MODE</p>
-      <div class="pillgrid" id="triadModePicker"></div>
-    </div>
+        <div class="glasscard">
+          <p class="card-title">MODE</p>
+          <div class="pillgrid" id="triadModePicker"></div>
+        </div>
+      </aside>
 
-    <div class="glasscard">
-      <div class="fb-head">
-        <div class="chord-name" id="triadName">C MAJEUR</div>
-        <div class="position-label" id="triadPosLabel">position fondamentale</div>
+      <div class="tool-main">
+        <div class="glasscard">
+          <div class="fb-head">
+            <div class="chord-name" id="triadName">C MAJEUR</div>
+            <div class="position-label" id="triadPosLabel">position fondamentale</div>
+          </div>
+          <div class="fb-scroll">
+            <svg class="fretboard-svg" id="triadFretboard" xmlns="http://www.w3.org/2000/svg"></svg>
+          </div>
+          <p class="subnote" id="triadNotes"></p>
+          <div class="legend">
+            <div><b>○</b> corde à vide</div>
+            <div><b>✕</b> corde étouffée</div>
+            <div><b style="color:#ff2f8f">●</b> fondamentale de la triade</div>
+          </div>
+          <button class="playbtn" id="triadPlayBtn">♪ JOUER LA TRIADE</button>
+        </div>
       </div>
-      <div class="fb-scroll">
-        <svg class="fretboard-svg" id="triadFretboard" xmlns="http://www.w3.org/2000/svg"></svg>
-      </div>
-      <p class="subnote" id="triadNotes"></p>
-      <div class="legend">
-        <div><b>○</b> corde à vide</div>
-        <div><b>✕</b> corde étouffée</div>
-        <div><b style="color:#ff2f8f">●</b> fondamentale de la triade</div>
-      </div>
-      <button class="playbtn" id="triadPlayBtn">♪ JOUER LA TRIADE</button>
     </div>
   </section>
 
   <section id="tab-gammes" class="tabpanel">
-    <div class="glasscard">
-      <p class="card-title">1. FONDAMENTALE</p>
-      <div class="pillgrid" id="scaleRootPicker"></div>
-    </div>
+    <div class="toolgrid">
+      <aside class="tool-sidebar">
+        <div class="glasscard">
+          <p class="card-title">FONDAMENTALE</p>
+          <div class="pillgrid" id="scaleRootPicker"></div>
+        </div>
 
-    <div class="glasscard">
-      <p class="card-title">2. GAMME (43 formules, classées par famille)</p>
-      <select class="gsel" id="scaleSelect"></select>
-      <p class="subnote" id="scaleDesc"></p>
-    </div>
+        <div class="glasscard">
+          <p class="card-title">GAMME (43 formules)</p>
+          <select class="gsel" id="scaleSelect"></select>
+          <p class="subnote" id="scaleDesc"></p>
+        </div>
 
-    <div class="glasscard">
-      <p class="card-title">3. AFFICHAGE</p>
-      <div class="toggle2">
-        <div class="pillgrid" id="scaleLabelPicker"></div>
-        <div class="pillgrid" id="scaleRangePicker"></div>
-      </div>
-    </div>
+        <div class="glasscard">
+          <p class="card-title">AFFICHAGE</p>
+          <div class="toggle2">
+            <div class="pillgrid" id="scaleLabelPicker"></div>
+            <div class="pillgrid" id="scaleRangePicker"></div>
+          </div>
+        </div>
+      </aside>
 
-    <div class="glasscard">
-      <div class="fb-head">
-        <div class="chord-name" id="scaleName">GAMME MAJEURE DE C</div>
-        <div class="position-label" id="scaleFormula">1 – 2 – 3 – 4 – 5 – 6 – 7</div>
+      <div class="tool-main">
+        <div class="glasscard">
+          <div class="fb-head">
+            <div class="chord-name" id="scaleName">GAMME MAJEURE DE C</div>
+            <div class="position-label" id="scaleFormula">1 – 2 – 3 – 4 – 5 – 6 – 7</div>
+          </div>
+          <div class="fb-scroll">
+            <svg class="fretboard-svg" id="scaleFretboard" xmlns="http://www.w3.org/2000/svg"></svg>
+          </div>
+          <div class="legend">
+            <div><b style="color:#ff2f8f">●</b> fondamentale</div>
+            <div><b style="color:#3ab6ff">●</b> autre note de la gamme</div>
+          </div>
+          <button class="playbtn" id="scalePlayBtn">♪ JOUER LA GAMME</button>
+        </div>
       </div>
-      <div class="fb-scroll">
-        <svg class="fretboard-svg" id="scaleFretboard" xmlns="http://www.w3.org/2000/svg"></svg>
-      </div>
-      <div class="legend">
-        <div><b style="color:#ff2f8f">●</b> fondamentale</div>
-        <div><b style="color:#3ab6ff">●</b> autre note de la gamme</div>
-      </div>
-      <button class="playbtn" id="scalePlayBtn">♪ JOUER LA GAMME</button>
     </div>
   </section>
 
@@ -400,29 +424,22 @@ function buildPickers(){
     rootEl.appendChild(b);
   });
 
-  const qEl = document.getElementById('qualityPicker');
+  const qEl = document.getElementById('qualitySelect');
   const groups = [];
   QUALITIES.forEach(q=>{ if (!groups.includes(q.group)) groups.push(q.group); });
   groups.forEach(group=>{
-    const box = document.createElement('div');
-    box.className = 'groupbox';
-    const h = document.createElement('p');
-    h.className = 'grouptitle';
-    h.textContent = group;
-    box.appendChild(h);
-    const grid = document.createElement('div');
-    grid.className = 'pillgrid';
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = group;
     QUALITIES.filter(q=>q.group===group).forEach(q=>{
-      const b = document.createElement('button');
-      b.className = 'pill quality';
-      b.dataset.quality = q.key;
-      b.textContent = q.label;
-      b.onclick = ()=>{ state.quality = q.key; render(); };
-      grid.appendChild(b);
+      const opt = document.createElement('option');
+      opt.value = q.key;
+      opt.textContent = q.label;
+      optgroup.appendChild(opt);
     });
-    box.appendChild(grid);
-    qEl.appendChild(box);
+    qEl.appendChild(optgroup);
   });
+  qEl.value = state.quality;
+  qEl.onchange = ()=>{ state.quality = qEl.value; render(); };
 }
 
 function barreFret(shape, root){
@@ -493,8 +510,9 @@ function buildShapePicker(){
 
 function updateActiveStates(){
   document.querySelectorAll('.pill.root').forEach(b=>b.classList.toggle('active', +b.dataset.root===state.root));
-  document.querySelectorAll('.pill.quality').forEach(b=>b.classList.toggle('active', b.dataset.quality===state.quality));
   document.querySelectorAll('.pill.shape').forEach(b=>b.classList.toggle('active', b.dataset.shape===state.shape));
+  const qEl = document.getElementById('qualitySelect');
+  if (qEl.value !== state.quality) qEl.value = state.quality;
 }
 
 function drawFretboard(svgId, voicing, rootPitchClass){
@@ -728,23 +746,25 @@ function buildTriadStaticPickers(){
 }
 
 function buildTriadPosPicker(){
-  const el = document.getElementById('triadPosPicker');
+  const el = document.getElementById('triadPosSelect');
   el.innerHTML = '';
   const positions = filterTriads();
   if (!positions.length){
-    el.innerHTML = '<p class="subnote">Aucune position enregistrée pour cette combinaison.</p>';
+    el.innerHTML = '<option>Aucune position enregistrée</option>';
+    el.disabled = true;
     return [];
   }
+  el.disabled = false;
   if (!positions.find(p=>triadKey(p)===triadState.posKey)) triadState.posKey = triadKey(positions[0]);
   positions.forEach(p=>{
     const { bf } = triadVoicing(p);
-    const b = document.createElement('button');
-    b.className = 'pill triadpos alt';
-    b.dataset.poskey = triadKey(p);
-    b.textContent = INV_LABELS[p.i] + (bf>0 ? ' · case '+bf : ' · ouverte');
-    b.onclick = ()=>{ triadState.posKey = triadKey(p); triadRender(); };
-    el.appendChild(b);
+    const opt = document.createElement('option');
+    opt.value = triadKey(p);
+    opt.textContent = INV_LABELS[p.i] + (bf>0 ? ' · case '+bf : ' · ouverte');
+    el.appendChild(opt);
   });
+  el.value = triadState.posKey;
+  el.onchange = ()=>{ triadState.posKey = el.value; triadRender(); };
   return positions;
 }
 
@@ -752,7 +772,6 @@ function updateTriadActiveStates(){
   document.querySelectorAll('.pill.triadroot').forEach(b=>b.classList.toggle('active', +b.dataset.root===triadState.root));
   document.querySelectorAll('.pill.triadquality').forEach(b=>b.classList.toggle('active', b.dataset.quality===triadState.quality));
   document.querySelectorAll('.pill.triadstrings').forEach(b=>b.classList.toggle('active', +b.dataset.strings===triadState.stringsIdx));
-  document.querySelectorAll('.pill.triadpos').forEach(b=>b.classList.toggle('active', b.dataset.poskey===triadState.posKey));
   document.querySelectorAll('.pill.triadmode').forEach(b=>b.classList.toggle('active', b.dataset.mode===triadState.mode));
 }
 
