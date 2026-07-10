@@ -1,0 +1,1102 @@
+{
+  "metadata": {
+    "version": 1,
+    "scaleCount": 43,
+    "intervalUnit": "semitones",
+    "rootInterval": 0,
+    "noteNamingDefault": "sharp",
+    "description": "Bibliothèque de formules de gammes pour guitare."
+  },
+  "scales": {
+    "major": {
+      "name": "Gamme majeure",
+      "shortName": "Majeure",
+      "family": "diatonic",
+      "intervals": [
+        0,
+        2,
+        4,
+        5,
+        7,
+        9,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "aliases": [
+        "Ionien",
+        "Ionian"
+      ],
+      "description": "La gamme majeure de référence."
+    },
+    "naturalMinor": {
+      "name": "Gamme mineure naturelle",
+      "shortName": "Mineure naturelle",
+      "family": "diatonic",
+      "intervals": [
+        0,
+        2,
+        3,
+        5,
+        7,
+        8,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "b3",
+        "4",
+        "5",
+        "b6",
+        "b7"
+      ],
+      "aliases": [
+        "Éolien",
+        "Aeolian"
+      ],
+      "description": "La forme naturelle de la gamme mineure."
+    },
+    "harmonicMinor": {
+      "name": "Gamme mineure harmonique",
+      "shortName": "Mineure harmonique",
+      "family": "minor",
+      "intervals": [
+        0,
+        2,
+        3,
+        5,
+        7,
+        8,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "b3",
+        "4",
+        "5",
+        "b6",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Mineure naturelle avec septième majeure."
+    },
+    "melodicMinor": {
+      "name": "Gamme mineure mélodique",
+      "shortName": "Mineure mélodique",
+      "family": "minor",
+      "intervals": [
+        0,
+        2,
+        3,
+        5,
+        7,
+        9,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "b3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "aliases": [
+        "Mineure jazz"
+      ],
+      "description": "Version ascendante moderne, souvent utilisée en jazz."
+    },
+    "majorPentatonic": {
+      "name": "Pentatonique majeure",
+      "shortName": "Penta majeure",
+      "family": "pentatonic",
+      "intervals": [
+        0,
+        2,
+        4,
+        7,
+        9
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "5",
+        "6"
+      ],
+      "aliases": [],
+      "description": "Gamme majeure à cinq notes."
+    },
+    "minorPentatonic": {
+      "name": "Pentatonique mineure",
+      "shortName": "Penta mineure",
+      "family": "pentatonic",
+      "intervals": [
+        0,
+        3,
+        5,
+        7,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "b3",
+        "4",
+        "5",
+        "b7"
+      ],
+      "aliases": [],
+      "description": "Une des gammes les plus utilisées à la guitare."
+    },
+    "majorBlues": {
+      "name": "Gamme blues majeure",
+      "shortName": "Blues majeure",
+      "family": "blues",
+      "intervals": [
+        0,
+        2,
+        3,
+        4,
+        7,
+        9
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "b3",
+        "3",
+        "5",
+        "6"
+      ],
+      "aliases": [],
+      "description": "Pentatonique majeure avec tierce mineure de passage."
+    },
+    "minorBlues": {
+      "name": "Gamme blues mineure",
+      "shortName": "Blues mineure",
+      "family": "blues",
+      "intervals": [
+        0,
+        3,
+        5,
+        6,
+        7,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "b3",
+        "4",
+        "b5",
+        "5",
+        "b7"
+      ],
+      "aliases": [
+        "Hexatonique blues"
+      ],
+      "description": "Pentatonique mineure avec quinte diminuée."
+    },
+    "dorian": {
+      "name": "Mode dorien",
+      "shortName": "Dorien",
+      "family": "majorModes",
+      "intervals": [
+        0,
+        2,
+        3,
+        5,
+        7,
+        9,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "b3",
+        "4",
+        "5",
+        "6",
+        "b7"
+      ],
+      "aliases": [],
+      "description": "Mode mineur avec sixte majeure."
+    },
+    "phrygian": {
+      "name": "Mode phrygien",
+      "shortName": "Phrygien",
+      "family": "majorModes",
+      "intervals": [
+        0,
+        1,
+        3,
+        5,
+        7,
+        8,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "b3",
+        "4",
+        "5",
+        "b6",
+        "b7"
+      ],
+      "aliases": [],
+      "description": "Mode mineur sombre avec seconde mineure."
+    },
+    "lydian": {
+      "name": "Mode lydien",
+      "shortName": "Lydien",
+      "family": "majorModes",
+      "intervals": [
+        0,
+        2,
+        4,
+        6,
+        7,
+        9,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "#4",
+        "5",
+        "6",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Mode majeur avec quarte augmentée."
+    },
+    "mixolydian": {
+      "name": "Mode mixolydien",
+      "shortName": "Mixolydien",
+      "family": "majorModes",
+      "intervals": [
+        0,
+        2,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "b7"
+      ],
+      "aliases": [],
+      "description": "Mode majeur avec septième mineure."
+    },
+    "locrian": {
+      "name": "Mode locrien",
+      "shortName": "Locrien",
+      "family": "majorModes",
+      "intervals": [
+        0,
+        1,
+        3,
+        5,
+        6,
+        8,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "b3",
+        "4",
+        "b5",
+        "b6",
+        "b7"
+      ],
+      "aliases": [],
+      "description": "Mode mineur avec seconde mineure et quinte diminuée."
+    },
+    "dorianFlat2": {
+      "name": "Dorien b2",
+      "shortName": "Dorien b2",
+      "family": "melodicMinorModes",
+      "intervals": [
+        0,
+        1,
+        3,
+        5,
+        7,
+        9,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "b3",
+        "4",
+        "5",
+        "6",
+        "b7"
+      ],
+      "aliases": [
+        "Phrygien #6"
+      ],
+      "description": "Deuxième mode de la mineure mélodique."
+    },
+    "lydianAugmented": {
+      "name": "Lydien augmenté",
+      "shortName": "Lydien augmenté",
+      "family": "melodicMinorModes",
+      "intervals": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        9,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "#4",
+        "#5",
+        "6",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Troisième mode de la mineure mélodique."
+    },
+    "lydianDominant": {
+      "name": "Lydien dominant",
+      "shortName": "Lydien dominant",
+      "family": "melodicMinorModes",
+      "intervals": [
+        0,
+        2,
+        4,
+        6,
+        7,
+        9,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "#4",
+        "5",
+        "6",
+        "b7"
+      ],
+      "aliases": [
+        "Acoustique",
+        "Overtone"
+      ],
+      "description": "Mode majeur dominant avec quarte augmentée."
+    },
+    "mixolydianFlat6": {
+      "name": "Mixolydien b6",
+      "shortName": "Mixolydien b6",
+      "family": "melodicMinorModes",
+      "intervals": [
+        0,
+        2,
+        4,
+        5,
+        7,
+        8,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "b6",
+        "b7"
+      ],
+      "aliases": [
+        "Hindou"
+      ],
+      "description": "Cinquième mode de la mineure mélodique."
+    },
+    "locrianSharp2": {
+      "name": "Locrien #2",
+      "shortName": "Locrien #2",
+      "family": "melodicMinorModes",
+      "intervals": [
+        0,
+        2,
+        3,
+        5,
+        6,
+        8,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "b3",
+        "4",
+        "b5",
+        "b6",
+        "b7"
+      ],
+      "aliases": [
+        "Demi-diminuée"
+      ],
+      "description": "Mode utile sur les accords m7b5."
+    },
+    "altered": {
+      "name": "Gamme altérée",
+      "shortName": "Altérée",
+      "family": "melodicMinorModes",
+      "intervals": [
+        0,
+        1,
+        3,
+        4,
+        6,
+        8,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "#2",
+        "3",
+        "b5",
+        "b6",
+        "b7"
+      ],
+      "aliases": [
+        "Super-locrien"
+      ],
+      "description": "Septième mode de la mineure mélodique."
+    },
+    "phrygianDominant": {
+      "name": "Phrygien dominant",
+      "shortName": "Phrygien dominant",
+      "family": "harmonicMinorModes",
+      "intervals": [
+        0,
+        1,
+        4,
+        5,
+        7,
+        8,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "3",
+        "4",
+        "5",
+        "b6",
+        "b7"
+      ],
+      "aliases": [
+        "Espagnole",
+        "Freygish"
+      ],
+      "description": "Cinquième mode de la mineure harmonique."
+    },
+    "lydianSharp2": {
+      "name": "Lydien #2",
+      "shortName": "Lydien #2",
+      "family": "harmonicMinorModes",
+      "intervals": [
+        0,
+        3,
+        4,
+        6,
+        7,
+        9,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "#2",
+        "3",
+        "#4",
+        "5",
+        "6",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Sixième mode de la mineure harmonique."
+    },
+    "doubleHarmonicMajor": {
+      "name": "Double harmonique majeure",
+      "shortName": "Double harmonique",
+      "family": "world",
+      "intervals": [
+        0,
+        1,
+        4,
+        5,
+        7,
+        8,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "3",
+        "4",
+        "5",
+        "b6",
+        "7"
+      ],
+      "aliases": [
+        "Byzantine",
+        "Arabe"
+      ],
+      "description": "Gamme majeure avec seconde et sixte mineures."
+    },
+    "hungarianMinor": {
+      "name": "Mineure hongroise",
+      "shortName": "Hongroise mineure",
+      "family": "world",
+      "intervals": [
+        0,
+        2,
+        3,
+        6,
+        7,
+        8,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "b3",
+        "#4",
+        "5",
+        "b6",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Mineure harmonique avec quarte augmentée."
+    },
+    "neapolitanMinor": {
+      "name": "Mineure napolitaine",
+      "shortName": "Napolitaine mineure",
+      "family": "world",
+      "intervals": [
+        0,
+        1,
+        3,
+        5,
+        7,
+        8,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "b3",
+        "4",
+        "5",
+        "b6",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Mineure harmonique avec seconde mineure."
+    },
+    "neapolitanMajor": {
+      "name": "Majeure napolitaine",
+      "shortName": "Napolitaine majeure",
+      "family": "world",
+      "intervals": [
+        0,
+        1,
+        3,
+        5,
+        7,
+        9,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "b3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Mineure mélodique avec seconde mineure."
+    },
+    "persian": {
+      "name": "Gamme persane",
+      "shortName": "Persane",
+      "family": "world",
+      "intervals": [
+        0,
+        1,
+        4,
+        5,
+        6,
+        8,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "3",
+        "4",
+        "b5",
+        "b6",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Gamme très tendue avec seconde mineure et quinte diminuée."
+    },
+    "wholeTone": {
+      "name": "Gamme par tons",
+      "shortName": "Ton par ton",
+      "family": "symmetric",
+      "intervals": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "#4",
+        "#5",
+        "b7"
+      ],
+      "aliases": [],
+      "description": "Gamme symétrique composée uniquement de tons entiers."
+    },
+    "diminishedHalfWhole": {
+      "name": "Diminuée demi-ton / ton",
+      "shortName": "Diminuée DT",
+      "family": "symmetric",
+      "intervals": [
+        0,
+        1,
+        3,
+        4,
+        6,
+        7,
+        9,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "#2",
+        "3",
+        "b5",
+        "5",
+        "6",
+        "b7"
+      ],
+      "aliases": [
+        "Half-whole diminished"
+      ],
+      "description": "Souvent utilisée sur les accords dominants altérés."
+    },
+    "diminishedWholeHalf": {
+      "name": "Diminuée ton / demi-ton",
+      "shortName": "Diminuée TD",
+      "family": "symmetric",
+      "intervals": [
+        0,
+        2,
+        3,
+        5,
+        6,
+        8,
+        9,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "b3",
+        "4",
+        "b5",
+        "b6",
+        "6",
+        "7"
+      ],
+      "aliases": [
+        "Whole-half diminished"
+      ],
+      "description": "Souvent utilisée sur les accords diminués."
+    },
+    "augmented": {
+      "name": "Gamme augmentée",
+      "shortName": "Augmentée",
+      "family": "symmetric",
+      "intervals": [
+        0,
+        3,
+        4,
+        7,
+        8,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "#2",
+        "3",
+        "5",
+        "#5",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Gamme symétrique alternant tierce mineure et demi-ton."
+    },
+    "chromatic": {
+      "name": "Gamme chromatique",
+      "shortName": "Chromatique",
+      "family": "symmetric",
+      "intervals": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "2",
+        "b3",
+        "3",
+        "4",
+        "b5",
+        "5",
+        "b6",
+        "6",
+        "b7",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Les douze notes de l'octave."
+    },
+    "bebopDominant": {
+      "name": "Bebop dominante",
+      "shortName": "Bebop dominante",
+      "family": "bebop",
+      "intervals": [
+        0,
+        2,
+        4,
+        5,
+        7,
+        9,
+        10,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "b7",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Mixolydien avec septième majeure de passage."
+    },
+    "bebopMajor": {
+      "name": "Bebop majeure",
+      "shortName": "Bebop majeure",
+      "family": "bebop",
+      "intervals": [
+        0,
+        2,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "b6",
+        "6",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Gamme majeure avec sixte mineure de passage."
+    },
+    "bebopDorian": {
+      "name": "Bebop dorienne",
+      "shortName": "Bebop dorienne",
+      "family": "bebop",
+      "intervals": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "b3",
+        "3",
+        "4",
+        "5",
+        "6",
+        "b7"
+      ],
+      "aliases": [],
+      "description": "Dorien avec tierce majeure de passage."
+    },
+    "hirajoshi": {
+      "name": "Hirajoshi",
+      "shortName": "Hirajoshi",
+      "family": "pentatonicWorld",
+      "intervals": [
+        0,
+        2,
+        3,
+        7,
+        8
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "b3",
+        "5",
+        "b6"
+      ],
+      "aliases": [],
+      "description": "Pentatonique japonaise au caractère sombre."
+    },
+    "inSen": {
+      "name": "In Sen",
+      "shortName": "In Sen",
+      "family": "pentatonicWorld",
+      "intervals": [
+        0,
+        1,
+        5,
+        7,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "4",
+        "5",
+        "b7"
+      ],
+      "aliases": [],
+      "description": "Pentatonique japonaise avec seconde mineure."
+    },
+    "iwato": {
+      "name": "Iwato",
+      "shortName": "Iwato",
+      "family": "pentatonicWorld",
+      "intervals": [
+        0,
+        1,
+        5,
+        6,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "4",
+        "b5",
+        "b7"
+      ],
+      "aliases": [],
+      "description": "Pentatonique japonaise très tendue."
+    },
+    "egyptianPentatonic": {
+      "name": "Pentatonique égyptienne",
+      "shortName": "Égyptienne",
+      "family": "pentatonicWorld",
+      "intervals": [
+        0,
+        2,
+        5,
+        7,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "4",
+        "5",
+        "b7"
+      ],
+      "aliases": [
+        "Suspended pentatonic"
+      ],
+      "description": "Pentatonique suspendue sans tierce."
+    },
+    "yo": {
+      "name": "Gamme Yo",
+      "shortName": "Yo",
+      "family": "pentatonicWorld",
+      "intervals": [
+        0,
+        2,
+        5,
+        7,
+        9
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "4",
+        "5",
+        "6"
+      ],
+      "aliases": [],
+      "description": "Pentatonique japonaise sans demi-ton."
+    },
+    "prometheus": {
+      "name": "Prometheus",
+      "shortName": "Prometheus",
+      "family": "hexatonic",
+      "intervals": [
+        0,
+        2,
+        4,
+        6,
+        9,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "#4",
+        "6",
+        "b7"
+      ],
+      "aliases": [],
+      "description": "Gamme hexatonique moderne et ouverte."
+    },
+    "enigmatic": {
+      "name": "Gamme énigmatique",
+      "shortName": "Énigmatique",
+      "family": "world",
+      "intervals": [
+        0,
+        1,
+        4,
+        6,
+        8,
+        10,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "b2",
+        "3",
+        "#4",
+        "#5",
+        "b7",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Gamme très colorée associée à Verdi."
+    },
+    "majorLocrian": {
+      "name": "Locrien majeur",
+      "shortName": "Locrien majeur",
+      "family": "other",
+      "intervals": [
+        0,
+        2,
+        4,
+        5,
+        6,
+        8,
+        10
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "b5",
+        "b6",
+        "b7"
+      ],
+      "aliases": [],
+      "description": "Mode majeur contenant une quinte diminuée."
+    },
+    "leadingWholeTone": {
+      "name": "Ton par ton avec sensible",
+      "shortName": "Leading whole tone",
+      "family": "other",
+      "intervals": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10,
+        11
+      ],
+      "degreeLabels": [
+        "1",
+        "2",
+        "3",
+        "#4",
+        "#5",
+        "b7",
+        "7"
+      ],
+      "aliases": [],
+      "description": "Gamme par tons complétée par une septième majeure."
+    }
+  }
+}
