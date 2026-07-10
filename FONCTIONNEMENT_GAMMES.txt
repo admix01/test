@@ -1,0 +1,488 @@
+PACK DU SITE DE GUITARE — ACCORDS ET TRIADES
+=============================================
+
+1. ARCHITECTURE GÉNÉRALE DU SITE
+--------------------------------
+
+Le site peut être organisé avec deux onglets séparés :
+
+    ONGLET ACCORDS
+    = dictionnaire de positions complètes et réellement observées
+
+    ONGLET TRIADES
+    = outil pédagogique et musical pour parcourir les triades,
+      leurs renversements et leurs positions sur le manche
+
+Les deux outils utilisent des données différentes, car leur logique n'est pas exactement
+la même.
+
+
+2. ONGLET « ACCORDS »
+---------------------
+
+Fichier principal :
+
+    data/chords.json
+
+Ce fichier est une base de données. Chaque nom d'accord est lié à une ou plusieurs
+positions jouables.
+
+Exemple simplifié :
+
+    {
+      "C": [
+        {
+          "shape": "x.3.2.0.1.0",
+          "frets_low_to_high": [null, 3, 2, 0, 1, 0],
+          "notes_low_to_high": [null, "C", "E", "G", "C", "E"],
+          "usage_count": 132,
+          "usage_rank": 1
+        }
+      ]
+    }
+
+La clé « C » représente le nom canonique de l'accord.
+
+Les six frettes sont toujours enregistrées dans cet ordre :
+
+    corde 6, corde 5, corde 4, corde 3, corde 2, corde 1
+    grave ------------------------------------------> aiguë
+
+Les valeurs possibles sont :
+
+    null = corde non jouée
+    0    = corde à vide
+    1+   = numéro de la frette
+
+Exemple :
+
+    x.3.2.0.1.0
+
+signifie :
+
+    corde 6 : non jouée
+    corde 5 : case 3
+    corde 4 : case 2
+    corde 3 : à vide
+    corde 2 : case 1
+    corde 1 : à vide
+
+Le moteur de l'onglet Accords doit principalement :
+
+    - retrouver l'accord choisi ;
+    - récupérer ses positions ;
+    - les classer par fréquence ou difficulté ;
+    - filtrer par zone du manche ;
+    - filtrer les accords ouverts ;
+    - filtrer les positions contenant un barré, si cette information est ajoutée ;
+    - afficher les notes et les numéros de frettes.
+
+La base actuelle a été nettoyée :
+
+    - les positions avec une seule corde jouée ont été supprimées ;
+    - les faux noms issus des annotations de doigté ont été supprimés ;
+    - certains noms équivalents ont été fusionnés ;
+    - les positions identiques d'un même accord ont été fusionnées ;
+    - une même position reste conservée lorsqu'elle appartient à deux accords
+      réellement différents.
+
+Par exemple, une forme identique peut rester présente sous plusieurs noms si elle est
+analysée différemment selon le contexte. En revanche, plusieurs copies identiques de
+« C majeur » ont été regroupées.
+
+Le champ « usage_count » indique la fréquence avec laquelle la position a été observée
+dans les tablatures de la base d'origine. Il peut servir à afficher les positions les
+plus courantes en premier.
+
+Le fichier :
+
+    engines/chord-engine.js
+
+contient les fonctions de base pour rechercher et filtrer les accords.
+
+
+3. ONGLET « TRIADES »
+---------------------
+
+Fichier principal :
+
+    data/triads.json
+
+Une triade est un accord réduit à trois notes différentes :
+
+    fondamentale
+    tierce
+    quinte
+
+Exemples :
+
+    C majeur     = C - E  - G
+    C mineur     = C - Eb - G
+    C diminué    = C - Eb - Gb
+    C augmenté   = C - E  - G#
+
+Le fichier contient quatre qualités de triades :
+
+    major       = majeure
+    minor       = mineure
+    diminished  = diminuée
+    augmented   = augmentée
+
+Une triade possède trois renversements.
+
+Position fondamentale :
+
+    la fondamentale est la note la plus grave
+
+    C - E - G
+
+Premier renversement :
+
+    la tierce est la note la plus grave
+
+    E - G - C
+
+Deuxième renversement :
+
+    la quinte est la note la plus grave
+
+    G - C - E
+
+Dans le fichier, les valeurs sont :
+
+    root
+    first
+    second
+
+Les triades sont calculées sur quatre groupes de cordes adjacentes :
+
+    6-5-4
+    5-4-3
+    4-3-2
+    3-2-1
+
+Exemple d'entrée :
+
+    {
+      "root": "C",
+      "quality": "major",
+      "inversion": "root",
+      "strings": [3, 2, 1],
+      "shape": "x.x.x.5.5.3",
+      "frets_low_to_high": [null, null, null, 5, 5, 3],
+      "notes_low_to_high": [null, null, null, "C", "E", "G"],
+      "intervals_low_to_high": [null, null, null, "1", "3", "5"]
+    }
+
+Le fichier de triades contient déjà les positions. Le moteur ne doit donc pas inventer
+une nouvelle position à chaque clic. Il doit chercher dans la base selon les critères
+sélectionnés par l'utilisateur.
+
+Exemple de recherche :
+
+    fondamentale : C
+    qualité       : majeure
+    renversement  : premier
+    cordes        : 3-2-1
+
+Le moteur retourne toutes les positions correspondantes.
+
+Le fichier :
+
+    engines/triad-engine.js
+
+permet de filtrer les triades par :
+
+    - fondamentale ;
+    - qualité ;
+    - renversement ;
+    - groupe de cordes ;
+    - frette minimale ;
+    - frette maximale ;
+    - présence ou non de cordes à vide.
+
+Le fichier contient des positions comprises entre les cases 0 et 24.
+
+Les positions ont été générées avec plusieurs règles de jouabilité :
+
+    - trois cordes adjacentes ;
+    - les trois notes de la triade apparaissent une fois chacune ;
+    - l'écart entre les frettes appuyées ne dépasse pas quatre cases ;
+    - l'étendue entre la note la plus grave et la plus aiguë ne dépasse pas
+      une octave.
+
+Cela rend la base cohérente pour une première version du site.
+
+
+4. FAUT-IL ENCORE TRAVAILLER LES POSITIONS DE TRIADES ?
+-------------------------------------------------------
+
+La base est suffisamment correcte pour construire une première version fonctionnelle.
+
+Cependant, l'affichage doit organiser les résultats. Il ne faut pas présenter une liste
+brute de centaines de positions.
+
+Pour chaque triade, le site devrait regrouper les résultats par groupe de cordes :
+
+    cordes 6-5-4
+    cordes 5-4-3
+    cordes 4-3-2
+    cordes 3-2-1
+
+Puis afficher les trois renversements :
+
+    position fondamentale
+    premier renversement
+    deuxième renversement
+
+Les positions peuvent ensuite être classées par zone du manche :
+
+    zone basse   : cases 0 à 5
+    zone médiane : cases 6 à 12
+    zone haute   : cases 13 à 24
+
+Une même forme peut réapparaître douze cases plus haut. Ce n'est pas forcément un
+doublon inutile : il s'agit de la même organisation des notes dans une autre octave.
+
+Par défaut, le site peut afficher les positions jusqu'à la case 15, puis proposer une
+option « manche complet » pour afficher les cases 16 à 24.
+
+
+5. À QUOI SERVENT LES TRIADES ?
+-------------------------------
+
+Les triades ne servent pas uniquement à faire des solos.
+
+Elles peuvent être utilisées comme de petits accords d'accompagnement.
+
+Par exemple, au lieu de jouer un accord complet de C :
+
+    x.3.2.0.1.0
+
+on peut jouer seulement :
+
+    x.x.x.5.5.3
+
+Cela produit un son plus léger et laisse davantage de place aux autres instruments.
+
+Les triades sont très utiles en :
+
+    pop
+    rock
+    funk
+    soul
+    reggae
+    accompagnement à deux guitares
+
+Elles sont également très utiles pour les solos et l'improvisation.
+
+Sur un accord de C majeur, les notes importantes sont :
+
+    C - E - G
+
+Le guitariste peut visualiser ces notes comme des notes cibles. Il peut jouer les trois
+notes en même temps, comme un petit accord, ou séparément, comme un arpège.
+
+L'onglet Triades peut donc proposer deux modes d'affichage :
+
+    MODE ACCORD
+    les trois notes sont jouées simultanément
+
+    MODE ARPÈGE / SOLO
+    les trois notes sont mises en évidence comme notes cibles
+
+Les données restent exactement les mêmes. Seule leur présentation change.
+
+
+6. DIFFÉRENCE ENTRE LES DEUX ONGLETS
+------------------------------------
+
+ONGLET ACCORDS
+
+    Objectif :
+        trouver une position complète pour jouer un accord
+
+    Source :
+        base de positions observées dans des tablatures
+
+    Sélection principale :
+        fondamentale + type d'accord
+
+    Résultat :
+        plusieurs diagrammes d'accords classés
+
+
+ONGLET TRIADES
+
+    Objectif :
+        comprendre et parcourir les trois notes essentielles d'un accord
+
+    Source :
+        base de triades calculées et organisées
+
+    Sélection principale :
+        fondamentale + qualité + groupe de cordes + renversement
+
+    Résultat :
+        familles de triades sur différentes zones du manche
+
+
+7. AFFICHAGE CONSEILLÉ POUR L'ONGLET ACCORDS
+--------------------------------------------
+
+L'utilisateur sélectionne :
+
+    fondamentale : E
+    type          : 7#9
+
+Le site affiche par exemple :
+
+    E7#9
+    x.7.6.7.8.x
+
+Puis il peut afficher :
+
+    - le nom des notes ;
+    - les cordes à jouer ;
+    - les cordes à étouffer ;
+    - le classement de la position ;
+    - la zone du manche ;
+    - la difficulté ;
+    - les autres positions disponibles.
+
+Le nom courant « accord Hendrix » peut être ajouté comme information pédagogique pour
+E7#9, sans remplacer son vrai nom musical.
+
+
+8. AFFICHAGE CONSEILLÉ POUR L'ONGLET TRIADES
+--------------------------------------------
+
+L'utilisateur sélectionne :
+
+    fondamentale : C
+    qualité       : majeure
+    cordes        : 3-2-1
+
+Le site affiche :
+
+    position fondamentale
+    x.x.x.5.5.3
+    C - E - G
+
+    premier renversement
+    x.x.x.9.8.8
+    E - G - C
+
+    deuxième renversement
+    x.x.x.12.13.12
+    G - C - E
+
+L'utilisateur peut ensuite choisir :
+
+    afficher les notes
+    afficher les intervalles
+    afficher la fondamentale
+    afficher les trois renversements
+    afficher le manche complet
+    passer en mode arpège / solo
+
+
+9. STRUCTURE DES FICHIERS DU PACK
+---------------------------------
+
+    data/
+        chords.json
+        chords.csv
+        chord_names.txt
+        triads.json
+        triads.csv
+
+    engines/
+        chord-engine.js
+        triad-engine.js
+
+    examples/
+        example-usage.js
+
+    licenses/
+        licences des données utilisées
+
+    FONCTIONNEMENT_ACCORDS_TRIADES.txt
+        le présent document
+
+
+10. RÔLE DES FICHIERS
+---------------------
+
+data/chords.json
+
+    Fichier principal de l'onglet Accords.
+    Il relie chaque nom d'accord à ses positions.
+
+data/triads.json
+
+    Fichier principal de l'onglet Triades.
+    Il contient les qualités, les renversements, les groupes de cordes et les positions.
+
+engines/chord-engine.js
+
+    Fonctions de recherche, de filtrage et de classement des accords.
+
+engines/triad-engine.js
+
+    Fonctions de recherche et d'organisation des triades.
+
+examples/example-usage.js
+
+    Exemple très simple montrant comment charger les deux fichiers et lancer une
+    recherche.
+
+
+11. LOGIQUE TECHNIQUE RÉSUMÉE
+-----------------------------
+
+Accords :
+
+    choix de l'utilisateur
+            ↓
+    recherche du nom dans chords.json
+            ↓
+    récupération des positions
+            ↓
+    filtrage et classement
+            ↓
+    affichage des diagrammes
+
+
+Triades :
+
+    choix de la fondamentale, de la qualité et des cordes
+            ↓
+    recherche dans triads.json
+            ↓
+    filtrage par renversement et zone du manche
+            ↓
+    organisation des positions
+            ↓
+    affichage en mode accord ou en mode arpège / solo
+
+
+12. ÉTAT ACTUEL DU PROJET
+-------------------------
+
+La partie Accords dispose maintenant d'une base nettoyée avec noms et positions.
+
+La partie Triades dispose d'une base structurée contenant les positions, les notes,
+les intervalles et les renversements.
+
+Le pack constitue donc un bon moteur de données pour commencer la partie visuelle du
+site.
+
+Le prochain travail principal concerne surtout l'interface :
+
+    - dessin du manche ;
+    - dessin des diagrammes d'accords ;
+    - menus de sélection ;
+    - navigation entre les positions ;
+    - affichage des notes ou des intervalles ;
+    - classement visuel des positions.
