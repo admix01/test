@@ -406,10 +406,9 @@ function drawScore(measures){
 
   const beatsPerMeasure = state.sig.beats;
   const measureW = beatsPerMeasure*BEAT_W + 26;
-  const containerW = 900;
-  const perRow = Math.max(1, Math.floor((containerW-LEFT_PAD-RIGHT_PAD) / measureW));
+  const perRow = 1; // one measure per line, so each bar is easy to read on its own
   const rows = Math.ceil(measures.length / perRow);
-  const svgW = Math.min(measures.length, perRow)*measureW + LEFT_PAD + RIGHT_PAD + 50;
+  const svgW = perRow*measureW + LEFT_PAD + RIGHT_PAD + 50;
   const svgH = rows*ROW_H + TOP_PAD;
   svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
   svg.setAttribute('width', svgW);

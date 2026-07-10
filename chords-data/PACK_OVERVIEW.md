@@ -1,11 +1,20 @@
 # Pack accords et triades de guitare
 
+> **Note de réorganisation** : les 13 fichiers uploadés avaient leurs noms et
+> contenus mélangés (bug d'upload). Ce dossier `chords-data/` contient les
+> mêmes fichiers renommés pour correspondre à leur vrai contenu (vérifié
+> manuellement fichier par fichier). **Le fichier de triades décrit ci-dessous
+> (`triads_positions_standard_tuning.json`, 1 114 positions avec quality/
+> inversion/strings/bass_note) n'a pas été retrouvé parmi les fichiers
+> uploadés** — ce qui portait ce nom contenait en réalité le journal
+> d'erreurs de parsing (renommé `dadagp_parse_errors.json` ici). Si tu as ce
+> fichier quelque part, renvoie-le et je l'intégrerai.
+
 ## Fichiers à utiliser en priorité
 
-- `processed/chord_positions_by_name.json` : positions regroupées par nom d’accord, classées par fréquence réelle d’utilisation.
-- `processed/dadagp_positions_normalized.csv` : une ligne par association accord-position.
-- `processed/triads_positions_standard_tuning.json` : triades, groupes de cordes et renversements.
-- `code/guitar-engine.js` : fonctions JavaScript de lecture, filtrage et recherche.
+- `chord_positions_by_name.json` : positions regroupées par nom d’accord, classées par fréquence réelle d’utilisation.
+- `dadagp_positions_normalized.csv` : une ligne par association accord-position.
+- `guitar-engine.js` : fonctions JavaScript de lecture, filtrage et recherche.
 
 L’ordre des cordes est toujours : `[6, 5, 4, 3, 2, 1]`, donc de la corde de Mi grave à la corde de Mi aiguë.
 
