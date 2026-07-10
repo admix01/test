@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RYTHME°Y2K — Générateur de rythmes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .row2{display:flex;gap:22px;flex-wrap:wrap}
+  .field{display:flex;flex-direction:column;gap:8px}
+  .field label{font-family:VT323,monospace;font-size:16px;color:var(--ink-soft)}
+  select, input[type=number]{
+    font-family:VT323,monospace;font-size:18px;color:var(--ink);
+    border:none;border-radius:10px;padding:8px 12px;
+    background:linear-gradient(180deg,#ffffff,#e3f2ff 60%,#cfeaff);
+    box-shadow:0 3px 0 rgba(10,60,100,.2), inset 0 1px 0 rgba(255,255,255,1);
+  }
+  input[type=number]{width:70px}
+  input[type=range]{width:220px;accent-color:#3ab6ff}
+
+  .checkgrid{margin-top:4px}
+  .warn{font-family:VT323,monospace;font-size:16px;color:#c0455a;margin-top:10px;min-height:20px}
+
+  .controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:18px}
+  .tempo{display:flex;align-items:center;gap:10px;font-family:VT323,monospace;font-size:18px}
+  #bpmVal{color:var(--ink);min-width:70px}
+  .toggle{display:flex;align-items:center;gap:8px;font-family:VT323,monospace;font-size:16px;cursor:none}
+
+  .score-scroll{overflow-x:auto;padding:6px 0}
+  svg#score{display:block}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-family:VT323,monospace;font-size:15px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="wrap">
+
+  <nav>
+    <div class="logo">FRETBOARD<span>°</span>Y2K</div>
+    <div class="navlinks">
+      <a href="index.html">MANCHE</a>
+      <a href="rhythm.html" class="current">RYTHME</a>
+    </div>
+    <div class="online"><i></i>ONLINE</div>
+  </nav>
+
+  <div class="marquee"><div>
+    <span>★ GENERATEUR DE RYTHMES ★ COCHE TES FIGURES ★ CLIQUE GENERER ★ ECOUTE AVEC LE METRONOME ★</span>
+    <span>★ GENERATEUR DE RYTHMES ★ COCHE TES FIGURES ★ CLIQUE GENERER ★ ECOUTE AVEC LE METRONOME ★</span>
+  </div></div>
+
+  <h1>GENERATEUR<br>DE RYTHMES</h1>
+  <p class="sub">Choisis une mesure, coche les figures rythmiques que tu veux voir apparaître, génère une phrase aléatoire et écoute-la avec le métronome ✧</p>
+
+  <div class="glasscard">
+    <p class="card-title">1. MESURE</p>
+    <div class="row2">
+      <div class="field">
+        <label>Chiffrage</label>
+        <select id="sigPicker"></select>
+      </div>
+      <div class="field">
+        <label>Nombre de mesures</label>
+        <input type="number" id="measureCount" min="1" max="8" value="4">
+      </div>
+    </div>
+  </div>
+
+  <div class="glasscard">
+    <p class="card-title">2. FIGURES RYTHMIQUES</p>
+    <div class="checkgrid" id="durationPicker"></div>
+    <div class="warn" id="warnMsg"></div>
+  </div>
+
+  <div class="glasscard">
+    <div class="fb-head" style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+      <div class="chord-name" style="font-family:'Press Start 2P',monospace;font-size:16px">RYTHME GENERE</div>
+    </div>
+    <div class="score-scroll">
+      <svg id="score" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="legend">
+      <div>clic + doux = métronome</div>
+      <div>clic sec = note jouée</div>
+      <div style="color:#3ab6ff">■ note en cours</div>
+    </div>
+
+    <div class="controls">
+      <button class="playbtn" id="genBtn">🎲 GENERER</button>
+      <button class="playbtn" id="playBtn">▶ JOUER</button>
+      <button class="playbtn stop" id="stopBtn" disabled>■ STOP</button>
+      <div class="tempo">
+        <span>TEMPO</span>
+        <input type="range" id="bpm" min="40" max="208" value="96">
+        <span id="bpmVal">96 bpm</span>
+      </div>
+      <label class="toggle"><input type="checkbox" id="countIn" checked> compte à rebours</label>
+      <label class="toggle"><input type="checkbox" id="loopChk"> boucle</label>
+    </div>
+  </div>
+
+  <footer>© FRETBOARD.Y2K — MADE FOR THE NEXT MILLENNIUM</footer>
+</div>
+
+<script>
+const TIME_SIGNATURES = [
+  {key:'2/4',  label:'2/4',  type:'simple',   beats:2},
+  {key:'3/4',  label:'3/4',  type:'simple',   beats:3},
+  {key:'4/4',  label:'4/4',  type:'simple',   beats:4},
+  {key:'5/4',  label:'5/4',  type:'simple',   beats:5},
+  {key:'6/8',  label:'6/8',  type:'compound', beats:2},
+  {key:'9/8',  label:'9/8',  type:'compound', beats:3},
+  {key:'12/8', label:'12/8', type:'compound', beats:4},
+];
+
+// notes: {t0,t1 fraction of beat (0..1), rest, level:'q'|'e'|'s', dotted}
+// beams: {level:1|2, from, to} spans note indices, OR {level:2, stub:'left'|'right', at}
+const CELLS = {
+  simple: {
+    q:    { label:'Noire',                  notes:[{t0:0,t1:1,rest:false,level:'q'}], beams:[] },
+    qr:   { label:'Silence (noire)',        notes:[{t0:0,t1:1,rest:true, level:'q'}], beams:[] },
+    ee:   { label:'Deux croches',           notes:[{t0:0,t1:.5,rest:false,level:'e'},{t0:.5,t1:1,rest:false,level:'e'}], beams:[{level:1,from:0,to:1}] },
+    e_er: { label:'Croche-silence',         notes:[{t0:0,t1:.5,rest:false,level:'e'},{t0:.5,t1:1,rest:true, level:'e'}], beams:[] },
+    er_e: { label:'Silence-croche',         notes:[{t0:0,t1:.5,rest:true, level:'e'},{t0:.5,t1:1,rest:false,level:'e'}], beams:[] },
+    ssss: { label:'Quatre doubles-croches', notes:[{t0:0,t1:.25,rest:false,level:'s'},{t0:.25,t1:.5,rest:false,level:'s'},{t0:.5,t1:.75,rest:false,level:'s'},{t0:.75,t1:1,rest:false,level:'s'}], beams:[{level:1,from:0,to:3},{level:2,from:0,to:3}] },
+    e_ss: { label:'Croche-double-double',   notes:[{t0:0,t1:.5,rest:false,level:'e'},{t0:.5,t1:.75,rest:false,level:'s'},{t0:.75,t1:1,rest:false,level:'s'}], beams:[{level:1,from:0,to:2},{level:2,from:1,to:2}] },
+    ss_e: { label:'Double-double-croche',   notes:[{t0:0,t1:.25,rest:false,level:'s'},{t0:.25,t1:.5,rest:false,level:'s'},{t0:.5,t1:1,rest:false,level:'e'}], beams:[{level:1,from:0,to:2},{level:2,from:0,to:1}] },
+    ds_s: { label:'Croche pointée-double',  notes:[{t0:0,t1:.75,rest:false,level:'e',dotted:true},{t0:.75,t1:1,rest:false,level:'s'}], beams:[{level:1,from:0,to:1},{level:2,stub:'left',at:1}] },
+    s_ds: { label:'Double-croche pointée',  notes:[{t0:0,t1:.25,rest:false,level:'s'},{t0:.25,t1:1,rest:false,level:'e',dotted:true}], beams:[{level:1,from:0,to:1},{level:2,stub:'right',at:0}] },
+    triplet: { label:'Triolet de croches',  notes:[{t0:0,t1:1/3,rest:false,level:'e'},{t0:1/3,t1:2/3,rest:false,level:'e'},{t0:2/3,t1:1,rest:false,level:'e'}], beams:[{level:1,from:0,to:2}], triplet:true },
+  },
+  compound: {
+    dq:   { label:'Noire pointée',          notes:[{t0:0,t1:1,rest:false,level:'q',dotted:true}], beams:[] },
+    dqr:  { label:'Silence (noire pointée)',notes:[{t0:0,t1:1,rest:true, level:'q',dotted:true}], beams:[] },
+    eee:  { label:'Trois croches',          notes:[{t0:0,t1:1/3,rest:false,level:'e'},{t0:1/3,t1:2/3,rest:false,level:'e'},{t0:2/3,t1:1,rest:false,level:'e'}], beams:[{level:1,from:0,to:2}] },
+    q_e:  { label:'Noire-croche',           notes:[{t0:0,t1:2/3,rest:false,level:'q'},{t0:2/3,t1:1,rest:false,level:'e'}], beams:[] },
+    e_q:  { label:'Croche-noire',           notes:[{t0:0,t1:1/3,rest:false,level:'e'},{t0:1/3,t1:1,rest:false,level:'q'}], beams:[] },
+    ssssss:{label:'Six doubles-croches',    notes:[0,1,2,3,4,5].map(i=>({t0:i/6,t1:(i+1)/6,rest:false,level:'s'})), beams:[{level:1,from:0,to:5},{level:2,from:0,to:5}] },
+  }
+};
+
+const LONG_DEFS = {
+  simple: {
+    half:   { label:'Blanche',              beats:2, rest:false, dotted:false },
+    halfr:  { label:'Silence (blanche)',    beats:2, rest:true,  dotted:false },
+    dhalf:  { label:'Blanche pointée',      beats:3, rest:false, dotted:true },
+    dhalfr: { label:'Silence (blanche pointée)', beats:3, rest:true, dotted:true },
+  },
+  compound: {
+    dhalf:  { label:'Blanche pointée',      beats:2, rest:false, dotted:true },
+    dhalfr: { label:'Silence (blanche pointée)', beats:2, rest:true, dotted:true },
+  }
+};
+
+let state = { sig: TIME_SIGNATURES[2], measures: 4, checked: new Set(['q','qr','ee','half']), measures_data: null };
+
+function meterCells(){ return CELLS[state.sig.type]; }
+function meterLongs(){ return LONG_DEFS[state.sig.type]; }
+
+function buildSigPicker(){
+  const el = document.getElementById('sigPicker');
+  TIME_SIGNATURES.forEach(s=>{
+    const opt = document.createElement('option');
+    opt.value = s.key; opt.textContent = s.label + (s.type==='compound' ? ' (composé)' : '');
+    el.appendChild(opt);
+  });
+  el.value = state.sig.key;
+  el.onchange = ()=>{
+    state.sig = TIME_SIGNATURES.find(s=>s.key===el.value);
+    state.checked = new Set(state.sig.type==='simple' ? ['q','qr','ee','half'] : ['dq','dqr','eee']);
+    buildDurationPicker();
+    state.measures_data = null;
+    drawScore(null);
+  };
+}
+
+function buildDurationPicker(){
+  const el = document.getElementById('durationPicker');
+  el.innerHTML = '';
+  const addChk = (key,label)=>{
+    const b = document.createElement('button');
+    b.className = 'chk' + (state.checked.has(key) ? ' on' : '');
+    b.innerHTML = '<span class="box"></span>' + label;
+    b.onclick = ()=>{
+      if (state.checked.has(key)) state.checked.delete(key); else state.checked.add(key);
+      b.classList.toggle('on');
+    };
+    el.appendChild(b);
+  };
+  const cells = meterCells(), longs = meterLongs();
+  Object.keys(longs).forEach(k=>addChk(k, longs[k].label));
+  Object.keys(cells).forEach(k=>addChk(k, cells[k].label));
+  addChk('fullrest', 'Silence de la mesure entière');
+}
+
+function generate(){
+  const longs = meterLongs(), cells = meterCells();
+  const longKeys = Object.keys(longs).filter(k=>state.checked.has(k));
+  const cellKeys = Object.keys(cells).filter(k=>state.checked.has(k));
+  const fullRestOn = state.checked.has('fullrest');
+  const warn = document.getElementById('warnMsg');
+  if (!longKeys.length && !cellKeys.length && !fullRestOn){
+    warn.textContent = 'Coche au moins une figure rythmique avant de générer !';
+    return null;
+  }
+  warn.textContent = '';
+
+  const measures = [];
+  for (let m=0; m<state.measures; m++){
+    let remaining = state.sig.beats;
+    const events = [];
+    const onlyFullRest = fullRestOn && !longKeys.length && !cellKeys.length;
+    if (fullRestOn && (onlyFullRest || Math.random() < 0.12)){
+      events.push({ type:'measureRest' });
+      remaining = 0;
+    }
+    while (remaining > 0){
+      const fitLongs = longKeys.filter(k=>longs[k].beats <= remaining);
+      if (fitLongs.length && cellKeys.length && Math.random() < 0.3){
+        const k = fitLongs[Math.floor(Math.random()*fitLongs.length)];
+        events.push({ type:'long', key:k });
+        remaining -= longs[k].beats;
+      } else if (cellKeys.length){
+        const k = cellKeys[Math.floor(Math.random()*cellKeys.length)];
+        events.push({ type:'cell', key:k });
+        remaining -= 1;
+      } else if (fitLongs.length){
+        const k = fitLongs[Math.floor(Math.random()*fitLongs.length)];
+        events.push({ type:'long', key:k });
+        remaining -= longs[k].beats;
+      } else {
+        events.push({ type:'cell', key:'__fallback' });
+        remaining -= 1;
+      }
+    }
+    measures.push(events);
+  }
+  return measures;
+}
+
+// walk measures, calling onEvent(evt, measureIdx) then, for each leaf note inside it, onLeaf(evt, localNoteIdx, note-or-null)
+function walkMeasures(measures, onEvent, onLeaf){
+  const cells = meterCells(), longs = meterLongs();
+  measures.forEach((events, mi)=>{
+    events.forEach(evt=>{
+      onEvent(evt, mi);
+      if (evt.type === 'measureRest'){
+        onLeaf(evt, 0, null);
+      } else if (evt.type === 'long'){
+        onLeaf(evt, 0, null);
+      } else {
+        const def = evt.key === '__fallback' ? { notes:[{t0:0,t1:1,rest:false,level:'q'}], beams:[] } : cells[evt.key];
+        def.notes.forEach((n,i)=>onLeaf(evt, i, n));
+      }
+    });
+  });
+}
+
+const BEAT_W = 62, ROW_H = 108, STAFF_Y = 46, TOP_PAD = 26, LEFT_PAD = 20, RIGHT_PAD = 20;
+
+function drawScore(measures){
+  const svg = document.getElementById('score');
+  svg.innerHTML = '';
+  window.__leafBoxes = [];
+  window.__timeline = [];
+  if (!measures){
+    svg.setAttribute('viewBox','0 0 400 100');
+    svg.setAttribute('width', 400); svg.setAttribute('height', 100);
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',20); t.setAttribute('y',55);
+    t.setAttribute('font-family','VT323,monospace'); t.setAttribute('font-size',20);
+    t.setAttribute('fill','rgba(10,61,98,.5)');
+    t.textContent = 'Clique GENERER pour créer un rythme ✧';
+    svg.appendChild(t);
+    return;
+  }
+
+  const ns = 'http://www.w3.org/2000/svg';
+  const add = (tag, attrs, parent) => {
+    const el = document.createElementNS(ns, tag);
+    for (const k in attrs) el.setAttribute(k, attrs[k]);
+    (parent||svg).appendChild(el);
+    return el;
+  };
+
+  const beatsPerMeasure = state.sig.beats;
+  const measureW = beatsPerMeasure*BEAT_W + 26;
+  const containerW = 900;
+  const perRow = Math.max(1, Math.floor((containerW-LEFT_PAD-RIGHT_PAD) / measureW));
+  const rows = Math.ceil(measures.length / perRow);
+  const svgW = Math.min(measures.length, perRow)*measureW + LEFT_PAD + RIGHT_PAD + 50;
+  const svgH = rows*ROW_H + TOP_PAD;
+  svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
+  svg.setAttribute('width', svgW);
+  svg.setAttribute('height', svgH);
+
+  function drawNotehead(cx, cy, open, dotted){
+    add('ellipse', { cx, cy, rx:7, ry:5.5, fill: open?'none':'#0a3d62', stroke:'#0a3d62', 'stroke-width':2, transform:`rotate(-18 ${cx} ${cy})` });
+    if (dotted) add('circle', { cx:cx+13, cy:cy-2, r:2.6, fill:'#0a3d62' });
+  }
+  function drawStem(cx, topY, botY){
+    add('line', { x1:cx, y1:botY, x2:cx, y2:topY, stroke:'#0a3d62', 'stroke-width':2 });
+  }
+  function drawFlag(cx, topY, count){
+    for (let i=0;i<count;i++){
+      const y = topY + i*7;
+      add('path', { d:`M ${cx} ${y} q 14 3 12 16 q -6 -8 -12 -8 Z`, fill:'#0a3d62' });
+    }
+  }
+  function drawQuarterRest(cx, cy){
+    add('path', {
+      d:`M ${cx-3} ${cy-13} L ${cx+4} ${cy-4} L ${cx-4} ${cy+1} L ${cx+5} ${cy+13}`,
+      fill:'none', stroke:'#0a3d62', 'stroke-width':2.6, 'stroke-linecap':'round', 'stroke-linejoin':'round'
+    });
+  }
+  function drawFlagRest(cx, cy, hooks){
+    add('line', { x1:cx-4, y1:cy-9, x2:cx+5, y2:cy+11, stroke:'#0a3d62', 'stroke-width':2.2, 'stroke-linecap':'round' });
+    for (let i=0;i<hooks;i++){
+      add('circle', { cx:cx-4+i*3, cy:cy-9+i*6, r:3.2, fill:'#0a3d62' });
+    }
+  }
+  function drawBarRest(cx, cy, hang, dotted){
+    add('rect', { x:cx-8, y: hang?cy+1:cy-8, width:16, height:7, fill:'#0a3d62' });
+    if (dotted) add('circle', { cx:cx+14, cy:cy-2, r:2.6, fill:'#0a3d62' });
+  }
+  function drawRest(cx, cy, level, dotted, spanRest){
+    if (spanRest === 'measure') { drawBarRest(cx, cy, true, false); return; }
+    if (level==='q') drawQuarterRest(cx, cy);
+    else if (level==='e') drawFlagRest(cx, cy, 1);
+    else if (level==='s') drawFlagRest(cx, cy, 2);
+    else if (level==='half') drawBarRest(cx, cy, false, dotted);
+  }
+
+  let lastBarX = LEFT_PAD, lastStaffY = TOP_PAD + STAFF_Y;
+  for (let r=0; r<rows; r++){
+    const rowMeasures = measures.slice(r*perRow, r*perRow+perRow);
+    const y0 = TOP_PAD + r*ROW_H;
+    const staffY = y0 + STAFF_Y;
+    let x = LEFT_PAD;
+    if (r===0){
+      add('text', { x, y:staffY+7, 'font-family':'Press Start 2P,monospace', 'font-size':15, fill:'#0a3d62' }).textContent = state.sig.key.split('/')[0];
+      add('text', { x, y:staffY+22, 'font-family':'Press Start 2P,monospace', 'font-size':15, fill:'#0a3d62' }).textContent = state.sig.key.split('/')[1];
+      x += 40;
+    }
+    add('line', { x1:x, y1:staffY, x2: x + rowMeasures.length*measureW - 12, y2:staffY, stroke:'#0a3d62', 'stroke-width':1.5, opacity:.6 });
+
+    rowMeasures.forEach(events=>{
+      add('line', { x1:x, y1:staffY-24, x2:x, y2:staffY+24, stroke:'#0a3d62', 'stroke-width':2 });
+      let bx = x + 6;
+      const beamY1 = staffY - 30, beamY2 = staffY - 23;
+
+      events.forEach(evt=>{
+        if (evt.type === 'measureRest'){
+          const cx = bx + (beatsPerMeasure*BEAT_W)/2 - 6;
+          drawRest(cx, staffY, null, false, 'measure');
+          window.__leafBoxes.push({x:cx-10, y:staffY-14, w:20, h:20});
+          window.__timeline.push({ beatLen: beatsPerMeasure, isRest:true });
+          bx += beatsPerMeasure*BEAT_W;
+          return;
+        }
+        if (evt.type === 'long'){
+          const def = meterLongs()[evt.key];
+          const w = def.beats*BEAT_W;
+          const cx = bx + w/2 - 6;
+          if (def.rest){ drawRest(cx, staffY, 'half', def.dotted, null); }
+          else {
+            drawNotehead(cx, staffY, true, def.dotted);
+            drawStem(cx+6.5, staffY-32, staffY-1);
+          }
+          window.__leafBoxes.push({x:bx, y:staffY-36, w, h:44});
+          window.__timeline.push({ beatLen: def.beats, isRest: !!def.rest });
+          bx += w;
+          return;
+        }
+        // cell
+        const def = evt.key === '__fallback' ? { notes:[{t0:0,t1:1,rest:false,level:'q'}], beams:[] } : meterCells()[evt.key];
+        const w = BEAT_W;
+        const noteX = def.notes.map(n => bx + ((n.t0+n.t1)/2)*w);
+        def.notes.forEach((n,i)=>{
+          const cx = noteX[i];
+          if (n.rest){
+            drawRest(cx, staffY, n.level, n.dotted, null);
+          } else {
+            drawNotehead(cx, staffY, false, n.dotted);
+          }
+          window.__leafBoxes.push({x:bx+n.t0*w, y:staffY-36, w:(n.t1-n.t0)*w, h:44});
+          window.__timeline.push({ beatLen: (n.t1-n.t0), isRest: n.rest });
+        });
+        // stems for non-rest notes not covered later individually; height depends on whether beamed
+        const beamedIdx = new Set();
+        (def.beams||[]).forEach(b=>{ if (b.from!==undefined){ for(let i=b.from;i<=b.to;i++) beamedIdx.add(i); } if (b.at!==undefined) beamedIdx.add(b.at); });
+        def.notes.forEach((n,i)=>{
+          if (n.rest) return;
+          const cx = noteX[i];
+          if (beamedIdx.has(i)){
+            drawStem(cx+6.5, beamY1, staffY-1);
+          } else {
+            drawStem(cx+6.5, staffY-30, staffY-1);
+            if (n.level==='e') drawFlag(cx+6.5, staffY-30, 1);
+            if (n.level==='s') drawFlag(cx+6.5, staffY-30, 2);
+          }
+        });
+        (def.beams||[]).forEach(b=>{
+          if (b.stub){
+            const cx = noteX[b.at]+6.5;
+            const dir = b.stub==='left' ? -1 : 1;
+            add('line', { x1:cx, y1:beamY2, x2:cx+dir*11, y2:beamY2, stroke:'#0a3d62', 'stroke-width':4.5, 'stroke-linecap':'round' });
+            return;
+          }
+          const x1 = noteX[b.from]+6.5, x2 = noteX[b.to]+6.5;
+          const y = b.level===1 ? beamY1 : beamY2;
+          add('line', { x1, y1:y, x2, y2:y, stroke:'#0a3d62', 'stroke-width':4.5, 'stroke-linecap':'round' });
+        });
+        if (def.triplet){
+          const cx = (noteX[0]+noteX[def.notes.length-1])/2 + 6.5;
+          add('text', { x:cx, y:beamY1-8, 'text-anchor':'middle', 'font-family':'VT323,monospace', 'font-size':17, fill:'#0a3d62' }).textContent = '3';
+        }
+        bx += w;
+      });
+
+      lastBarX = x + measureW - 12;
+      lastStaffY = staffY;
+      x += measureW;
+    });
+  }
+
+  add('line', { x1:lastBarX-2, y1:lastStaffY-24, x2:lastBarX-2, y2:lastStaffY+24, stroke:'#0a3d62', 'stroke-width':1.5 });
+  add('line', { x1:lastBarX+3, y1:lastStaffY-24, x2:lastBarX+3, y2:lastStaffY+24, stroke:'#0a3d62', 'stroke-width':4 });
+}
+
+let highlightRect = null;
+function ensureHighlight(){
+  const svg = document.getElementById('score');
+  if (!highlightRect || !svg.contains(highlightRect)){
+    highlightRect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    highlightRect.setAttribute('rx', 6);
+    highlightRect.setAttribute('fill', 'rgba(58,182,255,.28)');
+    highlightRect.setAttribute('visibility','hidden');
+    svg.insertBefore(highlightRect, svg.firstChild);
+  }
+}
+
+let audioCtx = null;
+let scheduled = [];
+let playing = false;
+let rafId = null;
+let playStartTime = 0;
+let playBeatDuration = 0;
+let countInBeats = 0;
+
+function tone(freq, time, dur, gainPeak, type){
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type || 'sine';
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.exponentialRampToValueAtTime(gainPeak, time+0.005);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time+dur);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(time);
+  osc.stop(time+dur+0.02);
+  scheduled.push(osc);
+}
+
+function stopPlayback(){
+  playing = false;
+  scheduled.forEach(o=>{ try{ o.stop(audioCtx.currentTime); }catch(e){} });
+  scheduled = [];
+  if (rafId) cancelAnimationFrame(rafId);
+  if (highlightRect) highlightRect.setAttribute('visibility','hidden');
+  document.getElementById('playBtn').disabled = false;
+  document.getElementById('stopBtn').disabled = true;
+}
+
+function startPlayback(){
+  if (!window.__timeline || !window.__timeline.length) return;
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  ensureHighlight();
+  const bpm = +document.getElementById('bpm').value;
+  const beatDur = 60/bpm;
+  playBeatDuration = beatDur;
+  const beatsPerMeasure = state.sig.beats;
+  countInBeats = document.getElementById('countIn').checked ? beatsPerMeasure : 0;
+  const now = audioCtx.currentTime + 0.15;
+  playStartTime = now;
+  scheduled = [];
+
+  for (let b=0;b<countInBeats;b++){
+    tone(b%beatsPerMeasure===0?1400:900, now+b*beatDur, 0.06, 0.25, 'square');
+  }
+
+  let beatCursor = 0;
+  let onsetCounter = 0;
+  window.__timeline.forEach(leaf=>{
+    const t = now + (countInBeats+beatCursor)*beatDur;
+    const isDown = Math.abs(beatCursor % beatsPerMeasure) < 0.001;
+    tone(isDown?1400:900, t, 0.05, 0.13, 'square');
+    if (!leaf.isRest){
+      tone(600, t, 0.09, 0.3, 'triangle');
+    }
+    beatCursor += leaf.beatLen;
+  });
+  const totalBeats = beatCursor;
+
+  playing = true;
+  document.getElementById('playBtn').disabled = true;
+  document.getElementById('stopBtn').disabled = false;
+
+  function frame(){
+    if (!playing) return;
+    const elapsed = audioCtx.currentTime - now;
+    const elapsedBeats = elapsed/beatDur - countInBeats;
+    if (elapsedBeats < 0){
+      highlightRect.setAttribute('visibility','hidden');
+    } else if (elapsedBeats >= totalBeats){
+      highlightRect.setAttribute('visibility','hidden');
+      if (document.getElementById('loopChk').checked){
+        stopPlayback();
+        startPlayback();
+        return;
+      } else {
+        stopPlayback();
+        return;
+      }
+    } else {
+      let acc = 0, idx = 0;
+      for (; idx<window.__timeline.length; idx++){
+        const len = window.__timeline[idx].beatLen;
+        if (elapsedBeats < acc+len) break;
+        acc += len;
+      }
+      const box = window.__leafBoxes[idx];
+      if (box){
+        highlightRect.setAttribute('x', box.x);
+        highlightRect.setAttribute('y', box.y);
+        highlightRect.setAttribute('width', box.w);
+        highlightRect.setAttribute('height', box.h);
+        highlightRect.setAttribute('visibility','visible');
+      }
+    }
+    rafId = requestAnimationFrame(frame);
+  }
+  rafId = requestAnimationFrame(frame);
+}
+
+document.getElementById('genBtn').onclick = ()=>{
+  const m = generate();
+  if (m){ state.measures_data = m; drawScore(m); }
+};
+document.getElementById('playBtn').onclick = ()=>{
+  if (!state.measures_data){ document.getElementById('warnMsg').textContent = 'Génère un rythme d\'abord !'; return; }
+  startPlayback();
+};
+document.getElementById('stopBtn').onclick = stopPlayback;
+document.getElementById('bpm').oninput = (e)=>{ document.getElementById('bpmVal').textContent = e.target.value + ' bpm'; };
+document.getElementById('measureCount').onchange = (e)=>{
+  let v = Math.max(1, Math.min(8, +e.target.value||4));
+  e.target.value = v;
+  state.measures = v;
+};
+
+buildSigPicker();
+buildDurationPicker();
+drawScore(null);
+
+const cursor = document.getElementById('cursor');
+window.addEventListener('mousemove', e=>{
+  cursor.style.transform = `translate(${e.clientX-13}px, ${e.clientY-13}px)`;
+});
+</script>
+</body>
+</html>
