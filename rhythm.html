@@ -23,20 +23,9 @@
     min-height:100vh;
     position:relative;
     overflow-x:hidden;
-    cursor:none;
   }
-  @media (pointer:coarse){ body{cursor:auto} #cursor{display:none} }
   a{color:var(--ink)}
   button{font-family:inherit}
-
-  #cursor{
-    position:fixed;top:0;left:0;width:26px;height:26px;border-radius:50%;
-    border:2px solid #fff;
-    background:radial-gradient(circle at 35% 30%, rgba(255,255,255,.9), rgba(127,209,255,.5) 60%, transparent 100%);
-    pointer-events:none;z-index:99999;mix-blend-mode:difference;
-    box-shadow:0 0 12px rgba(127,209,255,.9);
-    transform:translate(-100px,-100px);
-  }
 
   @keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(16px,-20px)}}
   @keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-18px,18px)}}
@@ -83,7 +72,7 @@
 
   .pillgrid{display:flex;flex-wrap:wrap;gap:10px}
   .pill{
-    border:none;border-radius:100px;padding:10px 16px;cursor:none;
+    border:none;border-radius:100px;padding:10px 16px;cursor:pointer;
     font-family:VT323,monospace;font-size:16px;letter-spacing:.5px;
     background:linear-gradient(180deg,#ffffff,#e3f2ff 60%,#cfeaff);
     color:var(--ink);box-shadow:0 3px 0 rgba(10,60,100,.2), inset 0 1px 0 rgba(255,255,255,1);
@@ -97,7 +86,7 @@
 
   .checkgrid{display:flex;flex-wrap:wrap;gap:10px}
   .chk{
-    display:flex;align-items:center;gap:8px;border:none;border-radius:12px;padding:9px 14px;cursor:none;
+    display:flex;align-items:center;gap:8px;border:none;border-radius:12px;padding:9px 14px;cursor:pointer;
     font-family:VT323,monospace;font-size:16px;
     background:linear-gradient(180deg,#ffffff,#e3f2ff 60%,#cfeaff);
     color:var(--ink);box-shadow:0 3px 0 rgba(10,60,100,.2), inset 0 1px 0 rgba(255,255,255,1);
@@ -108,9 +97,10 @@
   .chk .box{width:15px;height:15px;border-radius:4px;border:2px solid var(--ink);flex:none;position:relative}
   .chk.on .box{background:var(--ink)}
   .chk.on .box::after{content:'';position:absolute;left:3px;top:0px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(40deg)}
+  .chkicon{flex:none;display:block}
 
   .playbtn{
-    border:none;border-radius:100px;padding:14px 32px;cursor:none;
+    border:none;border-radius:100px;padding:14px 32px;cursor:pointer;
     font-family:'Press Start 2P',monospace;font-size:12px;color:#0a3d62;
     background:linear-gradient(180deg,#ffffff,#cfeaff 45%,#7fd1ff 46%,#a9e8b8);
     box-shadow:0 6px 0 rgba(10,60,100,.25), inset 0 1px 0 rgba(255,255,255,1), 0 10px 30px rgba(10,60,100,.3);
@@ -154,7 +144,6 @@
 </head>
 <body>
 
-<div id="cursor"></div>
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
 <div class="orb orb3"></div>
@@ -304,6 +293,109 @@ function buildSigPicker(){
   };
 }
 
+const ICON_NS = 'http://www.w3.org/2000/svg';
+function iconAdd(svg, tag, attrs){
+  const el = document.createElementNS(ICON_NS, tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  svg.appendChild(el);
+  return el;
+}
+function iconSvg(w, h){
+  const svg = document.createElementNS(ICON_NS, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.setAttribute('width', w);
+  svg.setAttribute('height', h);
+  svg.classList.add('chkicon');
+  return svg;
+}
+
+function cellIconSVG(def){
+  const W=52, H=34, staffY=20, beatW=40, x0=6, r=3.6;
+  const svg = iconSvg(W,H);
+  const add = (tag,attrs)=>iconAdd(svg,tag,attrs);
+  add('line',{x1:x0,y1:staffY,x2:x0+beatW,y2:staffY,stroke:'#0a3d62','stroke-width':1.2,opacity:.5});
+
+  const notes = def.notes;
+  const noteX = notes.map(n=>x0+((n.t0+n.t1)/2)*beatW);
+  const beamY1 = staffY-11, beamY2 = staffY-8;
+
+  const head = (cx,dotted)=>{
+    add('ellipse',{cx,cy:staffY,rx:r,ry:r*0.78,fill:'#0a3d62',stroke:'#0a3d62','stroke-width':1,transform:`rotate(-18 ${cx} ${staffY})`});
+    if (dotted) add('circle',{cx:cx+6,cy:staffY-1,r:1.3,fill:'#0a3d62'});
+  };
+  const rest = (cx,level,dotted)=>{
+    if (level==='q'){
+      add('path',{d:`M ${cx-1.5} ${staffY-6} L ${cx+2} ${staffY-2} L ${cx-2} ${staffY} L ${cx+2.5} ${staffY+6}`,fill:'none',stroke:'#0a3d62','stroke-width':1.4,'stroke-linecap':'round','stroke-linejoin':'round'});
+    } else {
+      const hooks = level==='e' ? 1 : 2;
+      add('line',{x1:cx-2,y1:staffY-4,x2:cx+2.5,y2:staffY+5,stroke:'#0a3d62','stroke-width':1.1,'stroke-linecap':'round'});
+      for (let i=0;i<hooks;i++) add('circle',{cx:cx-2+i*1.5,cy:staffY-4+i*3,r:1.5,fill:'#0a3d62'});
+    }
+    if (dotted) add('circle',{cx:cx+7,cy:staffY-1,r:1.3,fill:'#0a3d62'});
+  };
+  const stem = (cx,topY)=>add('line',{x1:cx,y1:staffY-1,x2:cx,y2:topY,stroke:'#0a3d62','stroke-width':1.2});
+  const flag = (cx,topY,count)=>{
+    for (let i=0;i<count;i++){
+      const y = topY+i*3.5;
+      add('path',{d:`M ${cx} ${y} q 6 1.5 5 7 q -2.5 -3.5 -5 -3.5 Z`,fill:'#0a3d62'});
+    }
+  };
+
+  const beamedIdx = new Set();
+  (def.beams||[]).forEach(b=>{ if (b.from!==undefined){ for(let i=b.from;i<=b.to;i++) beamedIdx.add(i); } if (b.at!==undefined) beamedIdx.add(b.at); });
+
+  notes.forEach((n,i)=>{
+    const cx = noteX[i];
+    if (n.rest){ rest(cx,n.level,n.dotted); return; }
+    head(cx,n.dotted);
+    if (beamedIdx.has(i)) stem(cx+3.2, beamY1);
+    else {
+      stem(cx+3.2, staffY-9);
+      if (n.level==='e') flag(cx+3.2, staffY-9, 1);
+      if (n.level==='s') flag(cx+3.2, staffY-9, 2);
+    }
+  });
+  (def.beams||[]).forEach(b=>{
+    if (b.stub){
+      const cx = noteX[b.at]+3.2, dir = b.stub==='left'?-1:1;
+      add('line',{x1:cx,y1:beamY2,x2:cx+dir*5,y2:beamY2,stroke:'#0a3d62','stroke-width':2.2,'stroke-linecap':'round'});
+      return;
+    }
+    const x1 = noteX[b.from]+3.2, x2 = noteX[b.to]+3.2, y = b.level===1?beamY1:beamY2;
+    add('line',{x1,y1:y,x2,y2:y,stroke:'#0a3d62','stroke-width':2.2,'stroke-linecap':'round'});
+  });
+  if (def.triplet){
+    const cx = (noteX[0]+noteX[notes.length-1])/2+3.2;
+    add('text',{x:cx,y:beamY1-3,'text-anchor':'middle','font-family':'VT323,monospace','font-size':8,fill:'#0a3d62'}).textContent = '3';
+  }
+  return svg;
+}
+
+function longIconSVG(def){
+  const W=32, H=34, staffY=20, cx=16;
+  const svg = iconSvg(W,H);
+  const add = (tag,attrs)=>iconAdd(svg,tag,attrs);
+  add('line',{x1:4,y1:staffY,x2:W-4,y2:staffY,stroke:'#0a3d62','stroke-width':1.2,opacity:.5});
+  if (def.rest){
+    add('rect',{x:cx-6,y:staffY-6,width:12,height:5,fill:'#0a3d62'});
+    if (def.dotted) add('circle',{cx:cx+10,cy:staffY-2,r:1.3,fill:'#0a3d62'});
+  } else {
+    add('ellipse',{cx,cy:staffY,rx:4.2,ry:3.2,fill:'none',stroke:'#0a3d62','stroke-width':1.3,transform:`rotate(-18 ${cx} ${staffY})`});
+    add('line',{x1:cx+3.6,y1:staffY-1,x2:cx+3.6,y2:staffY-14,stroke:'#0a3d62','stroke-width':1.2});
+    if (def.dotted) add('circle',{cx:cx+9,cy:staffY-2,r:1.3,fill:'#0a3d62'});
+  }
+  return svg;
+}
+
+function fullRestIconSVG(){
+  const W=32, H=34, staffY=20;
+  const svg = iconSvg(W,H);
+  const add = (tag,attrs)=>iconAdd(svg,tag,attrs);
+  add('line',{x1:4,y1:staffY,x2:W-4,y2:staffY,stroke:'#0a3d62','stroke-width':1.2,opacity:.5});
+  add('rect',{x:W/2-6,y:staffY+1,width:12,height:5,fill:'#0a3d62'});
+  return svg;
+}
+
 function buildDurationPicker(){
   const el = document.getElementById('durationPicker');
   el.innerHTML = '';
@@ -316,10 +408,16 @@ function buildDurationPicker(){
     box.appendChild(h);
     const grid = document.createElement('div');
     grid.className = 'checkgrid';
-    entries.forEach(([key,label])=>{
+    entries.forEach(([key,label,icon])=>{
       const b = document.createElement('button');
       b.className = 'chk' + (state.checked.has(key) ? ' on' : '');
-      b.innerHTML = '<span class="box"></span>' + label;
+      const boxEl = document.createElement('span');
+      boxEl.className = 'box';
+      b.appendChild(boxEl);
+      if (icon) b.appendChild(icon);
+      const span = document.createElement('span');
+      span.textContent = label;
+      b.appendChild(span);
       b.onclick = ()=>{
         if (state.checked.has(key)) state.checked.delete(key); else state.checked.add(key);
         b.classList.toggle('on');
@@ -330,9 +428,9 @@ function buildDurationPicker(){
     el.appendChild(box);
   };
   const cells = meterCells(), longs = meterLongs();
-  addGroup('Notes longues (plusieurs temps)', Object.keys(longs).map(k=>[k, longs[k].label]));
-  addGroup('Figures d\'un temps', Object.keys(cells).map(k=>[k, cells[k].label]));
-  addGroup('Cas particulier', [['fullrest', 'Silence de la mesure entière']]);
+  addGroup('Notes longues (plusieurs temps)', Object.keys(longs).map(k=>[k, longs[k].label, longIconSVG(longs[k])]));
+  addGroup('Figures d\'un temps', Object.keys(cells).map(k=>[k, cells[k].label, cellIconSVG(cells[k])]));
+  addGroup('Cas particulier', [['fullrest', 'Silence de la mesure entière', fullRestIconSVG()]]);
 }
 
 function generate(){
@@ -478,12 +576,12 @@ function drawScore(measures){
     const y0 = TOP_PAD + r*ROW_H;
     const staffY = y0 + STAFF_Y;
     add('text', { x:LEFT_PAD, y:y0+10, 'font-family':'VT323,monospace', 'font-size':14, fill:'rgba(10,61,98,.55)' }).textContent = 'MESURE ' + (r+1);
-    let x = LEFT_PAD;
+    const SIG_GUTTER = 40;
     if (r===0){
-      add('text', { x, y:staffY+7, 'font-family':'Press Start 2P,monospace', 'font-size':15, fill:'#0a3d62' }).textContent = state.sig.key.split('/')[0];
-      add('text', { x, y:staffY+22, 'font-family':'Press Start 2P,monospace', 'font-size':15, fill:'#0a3d62' }).textContent = state.sig.key.split('/')[1];
-      x += 40;
+      add('text', { x:LEFT_PAD, y:staffY+7, 'font-family':'Press Start 2P,monospace', 'font-size':15, fill:'#0a3d62' }).textContent = state.sig.key.split('/')[0];
+      add('text', { x:LEFT_PAD, y:staffY+22, 'font-family':'Press Start 2P,monospace', 'font-size':15, fill:'#0a3d62' }).textContent = state.sig.key.split('/')[1];
     }
+    let x = LEFT_PAD + SIG_GUTTER;
     add('line', { x1:x, y1:staffY, x2: x + rowMeasures.length*measureW - 12, y2:staffY, stroke:'#0a3d62', 'stroke-width':1.5, opacity:.6 });
 
     rowMeasures.forEach(events=>{
@@ -706,11 +804,6 @@ document.getElementById('measureCount').onchange = (e)=>{
 buildSigPicker();
 buildDurationPicker();
 drawScore(null);
-
-const cursor = document.getElementById('cursor');
-window.addEventListener('mousemove', e=>{
-  cursor.style.transform = `translate(${e.clientX-13}px, ${e.clientY-13}px)`;
-});
 </script>
 </body>
 </html>
