@@ -188,23 +188,38 @@ const QUALITIES = [
   {key:'sus4', label:'Sus4',     suffix:'sus4'},
 ];
 
+// Chaque forme est ancrée sur une corde de référence (rootString, index bas E=0..haut e=5)
+// et un décalage (rootOffset) : la case où tombe la fondamentale sur cette corde
+// quand la forme est jouée en position "barré 0" (case = fondamentale - corde_a_vide - rootOffset).
 const SHAPES = [
   {
-    key:'E', label:'Forme Mi (E)', openNote:4,
+    key:'C', label:'Forme Do (C)', rootString:1, rootOffset:3,
     templates:{
-      maj:[0,2,2,1,0,0], min:[0,2,2,0,0,0], '7':[0,2,0,1,0,0],
-      maj7:[0,2,1,1,0,0], min7:[0,2,0,0,0,0], sus2:[0,2,4,4,0,0], sus4:[0,2,2,2,0,0]
+      maj:[null,3,2,0,1,0], '7':[null,3,2,3,1,0]
     }
   },
   {
-    key:'A', label:'Forme La (A)', openNote:9,
+    key:'A', label:'Forme La (A)', rootString:1, rootOffset:0,
     templates:{
       maj:[null,0,2,2,2,0], min:[null,0,2,2,1,0], '7':[null,0,2,0,2,0],
       maj7:[null,0,2,1,2,0], min7:[null,0,2,0,1,0], sus2:[null,0,2,2,0,0], sus4:[null,0,2,2,3,0]
     }
   },
   {
-    key:'D', label:'Forme Ré (D)', openNote:2,
+    key:'G', label:'Forme Sol (G)', rootString:0, rootOffset:3,
+    templates:{
+      maj:[3,2,0,0,0,3], '7':[3,2,0,0,0,1]
+    }
+  },
+  {
+    key:'E', label:'Forme Mi (E)', rootString:0, rootOffset:0,
+    templates:{
+      maj:[0,2,2,1,0,0], min:[0,2,2,0,0,0], '7':[0,2,0,1,0,0],
+      maj7:[0,2,1,1,0,0], min7:[0,2,0,0,0,0], sus2:[0,2,4,4,0,0], sus4:[0,2,2,2,0,0]
+    }
+  },
+  {
+    key:'D', label:'Forme Ré (D)', rootString:2, rootOffset:0,
     templates:{
       maj:[null,null,0,2,3,2], min:[null,null,0,2,3,1], '7':[null,null,0,2,1,2],
       maj7:[null,null,0,2,2,2], min7:[null,null,0,2,1,1], sus2:[null,null,0,2,3,0], sus4:[null,null,0,2,3,3]
@@ -237,7 +252,7 @@ function buildPickers(){
 }
 
 function barreFret(shape, root){
-  return (root - shape.openNote + 12) % 12;
+  return (root - STRING_OPEN[shape.rootString] - shape.rootOffset + 1200) % 12;
 }
 
 function computeVoicing(shapeKey, quality, root){
@@ -248,10 +263,16 @@ function computeVoicing(shapeKey, quality, root){
   return { shape, bf, frets };
 }
 
+function availableShapes(quality){
+  return SHAPES.filter(s => !!s.templates[quality]);
+}
+
 function buildShapePicker(){
   const el = document.getElementById('shapePicker');
   el.innerHTML = '';
-  SHAPES.forEach(s=>{
+  const avail = availableShapes(state.quality);
+  if (!avail.find(s=>s.key===state.shape)) state.shape = avail[0].key;
+  avail.forEach(s=>{
     const { bf } = computeVoicing(s.key, state.quality, state.root);
     const b = document.createElement('button');
     b.className = 'pill shape';
@@ -327,26 +348,31 @@ function drawFretboard(voicing){
     add('text', { x: leftMargin - 10, y: topMargin - 10, 'text-anchor':'end', 'font-family':'VT323,monospace', 'font-size':16, fill:'#2b8fd6' }).textContent = 'case ' + startFret;
   }
 
-  for (let i=0;i<6;i++){
-    add('line', { x1: openX-14, y1: stringY(i), x2: svgWidth-16, y2: stringY(i), stroke:'#0a3d62', 'stroke-width': 1 + (5-i)*0.5, opacity:.75 });
-    add('text', { x: 14, y: stringY(i)+5, 'font-family':'VT323,monospace', 'font-size':17, fill:'var(--ink)' }).textContent = STRING_NAMES[i];
+  // rangée visuelle r=0 (haut) .. 5 (bas) ; dataIndex = corde réelle (0=Mi grave .. 5=mi aigu)
+  // convention affichage : mi aigu en haut, mi grave en bas (comme un manche vu par le guitariste)
+  const rowToString = r => 5 - r;
+
+  for (let r=0;r<6;r++){
+    const i = rowToString(r);
+    add('line', { x1: openX-14, y1: stringY(r), x2: svgWidth-16, y2: stringY(r), stroke:'#0a3d62', 'stroke-width': 1 + i*0.5, opacity:.75 });
+    add('text', { x: 14, y: stringY(r)+5, 'font-family':'VT323,monospace', 'font-size':17, fill:'var(--ink)' }).textContent = STRING_NAMES[i];
   }
 
   if (bf>0){
-    const firstIdx = frets.findIndex(f=>f!==null);
-    let lastIdx = -1;
-    frets.forEach((f,i)=>{ if(f!==null) lastIdx=i; });
-    if (firstIdx>=0 && lastIdx>firstIdx){
+    const playedRows = [];
+    frets.forEach((f,i)=>{ if(f!==null) playedRows.push(5-i); });
+    if (playedRows.length>1){
+      const minRow = Math.min(...playedRows), maxRow = Math.max(...playedRows);
       add('rect', {
-        x: spaceCenterX(0)-15, y: stringY(firstIdx)-13,
-        width:30, height: stringY(lastIdx)-stringY(firstIdx)+26,
+        x: spaceCenterX(0)-15, y: stringY(minRow)-13,
+        width:30, height: stringY(maxRow)-stringY(minRow)+26,
         rx:14, fill:'rgba(255,127,191,.35)', stroke:'rgba(255,127,191,.7)', 'stroke-width':1.5
       });
     }
   }
 
   frets.forEach((f,i)=>{
-    const y = stringY(i);
+    const y = stringY(5-i);
     if (f===null){
       add('text', { x: openX, y: y+6, 'text-anchor':'middle', 'font-family':'VT323,monospace', 'font-size':20, fill:'#c0455a' }).textContent = '✕';
       return;
