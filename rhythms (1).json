@@ -1,0 +1,1477 @@
+{
+  "metadata": {
+    "version": 1,
+    "figureCount": 53,
+    "reference": "quarter_note_equals_1_beat",
+    "description": "Base de figures rythmiques pour un site de guitare."
+  },
+  "figures": [
+    {
+      "id": "whole_note",
+      "name": "Ronde",
+      "shortName": "Ronde",
+      "category": "singleNotes",
+      "beatSpan": 4,
+      "subdivisionCount": 1,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "whole"
+      ],
+      "valuesInBeats": [
+        4
+      ],
+      "iconText": "𝅝",
+      "description": "Une ronde dure quatre temps en 4/4.",
+      "meterContext": "binary",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "duration",
+        "single"
+      ]
+    },
+    {
+      "id": "dotted_half_note",
+      "name": "Blanche pointée",
+      "shortName": "Bl. pointée",
+      "category": "singleNotes",
+      "beatSpan": 3,
+      "subdivisionCount": 1,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "dotted_half"
+      ],
+      "valuesInBeats": [
+        3
+      ],
+      "iconText": "𝅗𝅥.",
+      "description": "Une blanche pointée dure trois temps.",
+      "meterContext": "binary",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "duration",
+        "single",
+        "dotted"
+      ]
+    },
+    {
+      "id": "half_note",
+      "name": "Blanche",
+      "shortName": "Blanche",
+      "category": "singleNotes",
+      "beatSpan": 2,
+      "subdivisionCount": 1,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "half"
+      ],
+      "valuesInBeats": [
+        2
+      ],
+      "iconText": "𝅗𝅥",
+      "description": "Une blanche dure deux temps.",
+      "meterContext": "binary",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "duration",
+        "single"
+      ]
+    },
+    {
+      "id": "dotted_quarter_note",
+      "name": "Noire pointée",
+      "shortName": "Nr. pointée",
+      "category": "singleNotes",
+      "beatSpan": 1.5,
+      "subdivisionCount": 1,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "dotted_quarter"
+      ],
+      "valuesInBeats": [
+        1.5
+      ],
+      "iconText": "♩.",
+      "description": "Une noire pointée dure un temps et demi.",
+      "meterContext": "any",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "duration",
+        "single",
+        "dotted"
+      ]
+    },
+    {
+      "id": "quarter_note",
+      "name": "Noire",
+      "shortName": "Noire",
+      "category": "singleNotes",
+      "beatSpan": 1,
+      "subdivisionCount": 1,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "quarter"
+      ],
+      "valuesInBeats": [
+        1
+      ],
+      "iconText": "♩",
+      "description": "Une noire vaut un temps en 4/4.",
+      "meterContext": "any",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "duration",
+        "single"
+      ]
+    },
+    {
+      "id": "dotted_eighth_note",
+      "name": "Croche pointée",
+      "shortName": "Cr. pointée",
+      "category": "singleNotes",
+      "beatSpan": 0.75,
+      "subdivisionCount": 1,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "dotted_eighth"
+      ],
+      "valuesInBeats": [
+        0.75
+      ],
+      "iconText": "♪.",
+      "description": "Une croche pointée dure trois quarts de temps.",
+      "meterContext": "any",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "duration",
+        "single",
+        "dotted"
+      ]
+    },
+    {
+      "id": "eighth_note",
+      "name": "Croche",
+      "shortName": "Croche",
+      "category": "singleNotes",
+      "beatSpan": 0.5,
+      "subdivisionCount": 1,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth"
+      ],
+      "valuesInBeats": [
+        0.5
+      ],
+      "iconText": "♪",
+      "description": "Une croche vaut un demi-temps.",
+      "meterContext": "any",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "duration",
+        "single"
+      ]
+    },
+    {
+      "id": "sixteenth_note",
+      "name": "Double croche",
+      "shortName": "Dble croche",
+      "category": "singleNotes",
+      "beatSpan": 0.25,
+      "subdivisionCount": 1,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "sixteenth"
+      ],
+      "valuesInBeats": [
+        0.25
+      ],
+      "iconText": "♬",
+      "description": "Une double croche vaut un quart de temps.",
+      "meterContext": "any",
+      "difficulty": "easy",
+      "aliases": [
+        "Semi-croche"
+      ],
+      "tags": [
+        "duration",
+        "single"
+      ]
+    },
+    {
+      "id": "thirty_second_note",
+      "name": "Triple croche",
+      "shortName": "Tr. croche",
+      "category": "singleNotes",
+      "beatSpan": 0.125,
+      "subdivisionCount": 1,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "thirty_second"
+      ],
+      "valuesInBeats": [
+        0.125
+      ],
+      "iconText": "♬̇",
+      "description": "Une triple croche vaut un huitième de temps.",
+      "meterContext": "any",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "duration",
+        "single"
+      ]
+    },
+    {
+      "id": "sixty_fourth_note",
+      "name": "Quadruple croche",
+      "shortName": "Qd. croche",
+      "category": "singleNotes",
+      "beatSpan": 0.0625,
+      "subdivisionCount": 1,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "sixty_fourth"
+      ],
+      "valuesInBeats": [
+        0.0625
+      ],
+      "iconText": "♬̈",
+      "description": "Une quadruple croche vaut un seizième de temps.",
+      "meterContext": "any",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "duration",
+        "single"
+      ]
+    },
+    {
+      "id": "two_eighths",
+      "name": "Deux croches",
+      "shortName": "2 croches",
+      "category": "binaryGroups",
+      "beatSpan": 1,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        0.5,
+        0.5
+      ],
+      "iconText": "♪ ♪",
+      "description": "Découpage binaire le plus classique d’un temps.",
+      "meterContext": "binary",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "1_beat"
+      ]
+    },
+    {
+      "id": "four_sixteenths",
+      "name": "Quatre doubles croches",
+      "shortName": "4 dbl croches",
+      "category": "binaryGroups",
+      "beatSpan": 1,
+      "subdivisionCount": 4,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "sixteenth",
+        "sixteenth",
+        "sixteenth",
+        "sixteenth"
+      ],
+      "valuesInBeats": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ],
+      "iconText": "♬ ♬",
+      "description": "Découpage d’un temps en quatre subdivisions égales.",
+      "meterContext": "binary",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "1_beat"
+      ]
+    },
+    {
+      "id": "eighth_two_sixteenths",
+      "name": "Croche + deux doubles croches",
+      "shortName": "Croche + 2 dbl",
+      "category": "binaryGroups",
+      "beatSpan": 1,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth",
+        "sixteenth",
+        "sixteenth"
+      ],
+      "valuesInBeats": [
+        0.5,
+        0.25,
+        0.25
+      ],
+      "iconText": "♪ ♬",
+      "description": "Figure très fréquente en pop, funk et rock.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "1_beat",
+        "mixed"
+      ]
+    },
+    {
+      "id": "two_sixteenths_eighth",
+      "name": "Deux doubles croches + croche",
+      "shortName": "2 dbl + croche",
+      "category": "binaryGroups",
+      "beatSpan": 1,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "sixteenth",
+        "sixteenth",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        0.25,
+        0.25,
+        0.5
+      ],
+      "iconText": "♬ ♪",
+      "description": "Figure inverse de croche + deux doubles croches.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "1_beat",
+        "mixed"
+      ]
+    },
+    {
+      "id": "sixteenth_eighth_sixteenth",
+      "name": "Double croche + croche + double croche",
+      "shortName": "Dbl + cr + dbl",
+      "category": "binaryGroups",
+      "beatSpan": 1,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "sixteenth",
+        "eighth",
+        "sixteenth"
+      ],
+      "valuesInBeats": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "iconText": "♬ ♪ ♬",
+      "description": "Figure symétrique très utilisée en phrasé rythmique.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "1_beat",
+        "mixed"
+      ]
+    },
+    {
+      "id": "eighth_rest_eighth",
+      "name": "Soupir de croche + croche",
+      "shortName": "Rest cr + cr",
+      "category": "binaryGroups",
+      "beatSpan": 1,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth_rest",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        0.5,
+        0.5
+      ],
+      "iconText": "𝄽 ♪",
+      "description": "Syncope simple avec attaque sur le contretemps.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "1_beat",
+        "rest",
+        "syncopation"
+      ]
+    },
+    {
+      "id": "eighth_eighth_rest",
+      "name": "Croche + soupir de croche",
+      "shortName": "Cr + rest cr",
+      "category": "binaryGroups",
+      "beatSpan": 1,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth",
+        "eighth_rest"
+      ],
+      "valuesInBeats": [
+        0.5,
+        0.5
+      ],
+      "iconText": "♪ 𝄽",
+      "description": "Laisse le contretemps vide.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "1_beat",
+        "rest"
+      ]
+    },
+    {
+      "id": "half_beat_syncopation",
+      "name": "Double croche + soupir de croche + double croche",
+      "shortName": "Dbl + rest + dbl",
+      "category": "binaryGroups",
+      "beatSpan": 1,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "sixteenth",
+        "eighth_rest",
+        "sixteenth"
+      ],
+      "valuesInBeats": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "iconText": "♬ 𝄽 ♬",
+      "description": "Syncope courte centrée sur le contretemps.",
+      "meterContext": "binary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "1_beat",
+        "rest",
+        "syncopation"
+      ]
+    },
+    {
+      "id": "dotted_eighth_sixteenth",
+      "name": "Croche pointée + double croche",
+      "shortName": "Cr pointée + dbl",
+      "category": "dottedBinary",
+      "beatSpan": 1,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "dotted_eighth",
+        "sixteenth"
+      ],
+      "valuesInBeats": [
+        0.75,
+        0.25
+      ],
+      "iconText": "♪. ♬",
+      "description": "Figure très classique, notamment en funk, rock et metal.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "1_beat",
+        "dotted"
+      ]
+    },
+    {
+      "id": "sixteenth_dotted_eighth",
+      "name": "Double croche + croche pointée",
+      "shortName": "Dbl + cr pointée",
+      "category": "dottedBinary",
+      "beatSpan": 1,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "sixteenth",
+        "dotted_eighth"
+      ],
+      "valuesInBeats": [
+        0.25,
+        0.75
+      ],
+      "iconText": "♬ ♪.",
+      "description": "Version renversée de la précédente.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "1_beat",
+        "dotted"
+      ]
+    },
+    {
+      "id": "quarter_eighth",
+      "name": "Noire + croche",
+      "shortName": "Noire + croche",
+      "category": "dottedBinary",
+      "beatSpan": 1.5,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "quarter",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        1,
+        0.5
+      ],
+      "iconText": "♩ ♪",
+      "description": "Figure de un temps et demi.",
+      "meterContext": "any",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "1_5_beats"
+      ]
+    },
+    {
+      "id": "eighth_quarter",
+      "name": "Croche + noire",
+      "shortName": "Croche + noire",
+      "category": "dottedBinary",
+      "beatSpan": 1.5,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth",
+        "quarter"
+      ],
+      "valuesInBeats": [
+        0.5,
+        1
+      ],
+      "iconText": "♪ ♩",
+      "description": "Figure de un temps et demi avec départ plus léger.",
+      "meterContext": "any",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "1_5_beats"
+      ]
+    },
+    {
+      "id": "dotted_quarter_eighth",
+      "name": "Noire pointée + croche",
+      "shortName": "Nr pointée + cr",
+      "category": "dottedBinary",
+      "beatSpan": 2,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "dotted_quarter",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        1.5,
+        0.5
+      ],
+      "iconText": "♩. ♪",
+      "description": "Figure très fréquente sur deux temps.",
+      "meterContext": "any",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "2_beats",
+        "dotted"
+      ]
+    },
+    {
+      "id": "eighth_dotted_quarter",
+      "name": "Croche + noire pointée",
+      "shortName": "Cr + nr pointée",
+      "category": "dottedBinary",
+      "beatSpan": 2,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth",
+        "dotted_quarter"
+      ],
+      "valuesInBeats": [
+        0.5,
+        1.5
+      ],
+      "iconText": "♪ ♩.",
+      "description": "Décalage rythmique donnant une syncope.",
+      "meterContext": "any",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "2_beats",
+        "dotted",
+        "syncopation"
+      ]
+    },
+    {
+      "id": "eighth_triplet",
+      "name": "Triolet de croches",
+      "shortName": "Triolet croches",
+      "category": "tuplets",
+      "beatSpan": 1,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth_triplet",
+        "eighth_triplet",
+        "eighth_triplet"
+      ],
+      "valuesInBeats": [
+        0.3333333333333333,
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "iconText": "♪♪♪ (3)",
+      "description": "Trois notes égales sur un temps.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [
+        "Triolet"
+      ],
+      "tags": [
+        "1_beat",
+        "triplet"
+      ]
+    },
+    {
+      "id": "quarter_triplet",
+      "name": "Triolet de noires",
+      "shortName": "Triolet noires",
+      "category": "tuplets",
+      "beatSpan": 2,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "quarter_triplet",
+        "quarter_triplet",
+        "quarter_triplet"
+      ],
+      "valuesInBeats": [
+        0.6666666666666666,
+        0.6666666666666666,
+        0.6666666666666666
+      ],
+      "iconText": "♩♩♩ (3)",
+      "description": "Trois noires réparties sur deux temps.",
+      "meterContext": "binary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "2_beats",
+        "triplet"
+      ]
+    },
+    {
+      "id": "sixteenth_triplet",
+      "name": "Triolet de doubles croches",
+      "shortName": "Triolet dbl",
+      "category": "tuplets",
+      "beatSpan": 0.5,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "sixteenth_triplet",
+        "sixteenth_triplet",
+        "sixteenth_triplet"
+      ],
+      "valuesInBeats": [
+        0.16666666666666666,
+        0.16666666666666666,
+        0.16666666666666666
+      ],
+      "iconText": "♬♬♬ (3)",
+      "description": "Trois doubles croches dans un demi-temps.",
+      "meterContext": "binary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "half_beat",
+        "triplet"
+      ]
+    },
+    {
+      "id": "quintuplet",
+      "name": "Quintolet",
+      "shortName": "Quintolet",
+      "category": "tuplets",
+      "beatSpan": 1,
+      "subdivisionCount": 5,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "quintuplet",
+        "quintuplet",
+        "quintuplet",
+        "quintuplet",
+        "quintuplet"
+      ],
+      "valuesInBeats": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "iconText": "♬♬♬♬♬ (5)",
+      "description": "Cinq notes égales sur un temps.",
+      "meterContext": "binary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "1_beat",
+        "quintuplet",
+        "atypical"
+      ]
+    },
+    {
+      "id": "sextuplet",
+      "name": "Sextolet",
+      "shortName": "Sextolet",
+      "category": "tuplets",
+      "beatSpan": 1,
+      "subdivisionCount": 6,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "sextuplet",
+        "sextuplet",
+        "sextuplet",
+        "sextuplet",
+        "sextuplet",
+        "sextuplet"
+      ],
+      "valuesInBeats": [
+        0.16666666666666666,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.16666666666666666
+      ],
+      "iconText": "♬♬♬♬♬♬ (6)",
+      "description": "Six notes égales sur un temps.",
+      "meterContext": "binary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "1_beat",
+        "tuplet"
+      ]
+    },
+    {
+      "id": "septuplet",
+      "name": "Septolet",
+      "shortName": "Septolet",
+      "category": "tuplets",
+      "beatSpan": 1,
+      "subdivisionCount": 7,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "septuplet",
+        "septuplet",
+        "septuplet",
+        "septuplet",
+        "septuplet",
+        "septuplet",
+        "septuplet"
+      ],
+      "valuesInBeats": [
+        0.14285714285714285,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.14285714285714285
+      ],
+      "iconText": "♬×7 (7)",
+      "description": "Sept notes égales sur un temps.",
+      "meterContext": "binary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "1_beat",
+        "atypical"
+      ]
+    },
+    {
+      "id": "nonuplet",
+      "name": "Nonolet",
+      "shortName": "Nonolet",
+      "category": "tuplets",
+      "beatSpan": 1,
+      "subdivisionCount": 9,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "nonuplet",
+        "nonuplet",
+        "nonuplet",
+        "nonuplet",
+        "nonuplet",
+        "nonuplet",
+        "nonuplet",
+        "nonuplet",
+        "nonuplet"
+      ],
+      "valuesInBeats": [
+        0.1111111111111111,
+        0.1111111111111111,
+        0.1111111111111111,
+        0.1111111111111111,
+        0.1111111111111111,
+        0.1111111111111111,
+        0.1111111111111111,
+        0.1111111111111111,
+        0.1111111111111111
+      ],
+      "iconText": "♬×9 (9)",
+      "description": "Neuf notes égales sur un temps.",
+      "meterContext": "binary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "1_beat",
+        "atypical"
+      ]
+    },
+    {
+      "id": "three_eighths",
+      "name": "Trois croches",
+      "shortName": "3 croches",
+      "category": "ternaryGroups",
+      "beatSpan": 1.5,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth",
+        "eighth",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "iconText": "♪ ♪ ♪",
+      "description": "Découpage courant d’un temps ternaire en 6/8.",
+      "meterContext": "ternary",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "compound"
+      ]
+    },
+    {
+      "id": "dotted_quarter_as_beat",
+      "name": "Temps ternaire complet",
+      "shortName": "Temps 6/8",
+      "category": "ternaryGroups",
+      "beatSpan": 1.5,
+      "subdivisionCount": 1,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "dotted_quarter"
+      ],
+      "valuesInBeats": [
+        1.5
+      ],
+      "iconText": "♩.",
+      "description": "Le battement de référence en 6/8.",
+      "meterContext": "ternary",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "compound"
+      ]
+    },
+    {
+      "id": "eighth_eighth_eighth_rest",
+      "name": "Deux croches + soupir de croche",
+      "shortName": "2 cr + rest",
+      "category": "ternaryGroups",
+      "beatSpan": 1.5,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth",
+        "eighth",
+        "eighth_rest"
+      ],
+      "valuesInBeats": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "iconText": "♪ ♪ 𝄽",
+      "description": "Figure ternaire avec silence final.",
+      "meterContext": "ternary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "compound",
+        "rest"
+      ]
+    },
+    {
+      "id": "eighth_rest_two_eighths",
+      "name": "Soupir de croche + deux croches",
+      "shortName": "Rest + 2 cr",
+      "category": "ternaryGroups",
+      "beatSpan": 1.5,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth_rest",
+        "eighth",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "iconText": "𝄽 ♪ ♪",
+      "description": "Syncope ternaire avec départ en l’air.",
+      "meterContext": "ternary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "compound",
+        "rest",
+        "syncopation"
+      ]
+    },
+    {
+      "id": "dotted_eighth_eighth_rest",
+      "name": "Croche pointée + soupir de croche + double croche",
+      "shortName": "Cr pointée + rest",
+      "category": "ternaryGroups",
+      "beatSpan": 1.5,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "dotted_eighth",
+        "eighth_rest",
+        "sixteenth"
+      ],
+      "valuesInBeats": [
+        0.75,
+        0.5,
+        0.25
+      ],
+      "iconText": "♪. 𝄽 ♬",
+      "description": "Figure mixte ternaire plus atypique.",
+      "meterContext": "ternary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "compound",
+        "rest",
+        "atypical"
+      ]
+    },
+    {
+      "id": "quarter_tied_eighth",
+      "name": "Noire liée à une croche",
+      "shortName": "Noire liée + cr",
+      "category": "tiesSyncopation",
+      "beatSpan": 1.5,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "quarter_tied",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        1,
+        0.5
+      ],
+      "iconText": "♩‿♪",
+      "description": "Prolonge l’attaque sur le contretemps suivant.",
+      "meterContext": "any",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "tie",
+        "syncopation"
+      ]
+    },
+    {
+      "id": "eighth_tied_quarter",
+      "name": "Croche liée à une noire",
+      "shortName": "Croche liée + nr",
+      "category": "tiesSyncopation",
+      "beatSpan": 1.5,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth_tied",
+        "quarter"
+      ],
+      "valuesInBeats": [
+        0.5,
+        1
+      ],
+      "iconText": "♪‿♩",
+      "description": "Liaison créant une sensation de décalage.",
+      "meterContext": "any",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "tie",
+        "syncopation"
+      ]
+    },
+    {
+      "id": "syncopated_bar_44_basic",
+      "name": "Syncope 4/4 basique",
+      "shortName": "Syncope 4/4",
+      "category": "tiesSyncopation",
+      "beatSpan": 4,
+      "subdivisionCount": 4,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "quarter",
+        "eighth_tied",
+        "quarter",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        1,
+        0.5,
+        1.5,
+        1
+      ],
+      "iconText": "♩ ♪‿♩ ♪",
+      "description": "Exemple simple de cellule syncopée sur une mesure de 4/4.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "bar",
+        "syncopation"
+      ]
+    },
+    {
+      "id": "anticipated_attack",
+      "name": "Attaque anticipée",
+      "shortName": "Attaque anticipée",
+      "category": "tiesSyncopation",
+      "beatSpan": 1,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth_rest",
+        "eighth_tied"
+      ],
+      "valuesInBeats": [
+        0.5,
+        0.5
+      ],
+      "iconText": "𝄽 ♪‿",
+      "description": "Attaque en l’air qui se prolonge sur le temps.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "syncopation",
+        "anticipation"
+      ]
+    },
+    {
+      "id": "quarter_rest_quarter",
+      "name": "Soupir + noire",
+      "shortName": "Rest + noire",
+      "category": "restsMixed",
+      "beatSpan": 2,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "quarter_rest",
+        "quarter"
+      ],
+      "valuesInBeats": [
+        1,
+        1
+      ],
+      "iconText": "𝄽 ♩",
+      "description": "Une attaque après un temps de silence.",
+      "meterContext": "binary",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "rest"
+      ]
+    },
+    {
+      "id": "quarter_two_eighths",
+      "name": "Noire + deux croches",
+      "shortName": "Noire + 2 cr",
+      "category": "restsMixed",
+      "beatSpan": 2,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "quarter",
+        "eighth",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        1,
+        0.5,
+        0.5
+      ],
+      "iconText": "♩ ♪ ♪",
+      "description": "Figure courante sur deux temps.",
+      "meterContext": "any",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "2_beats"
+      ]
+    },
+    {
+      "id": "two_eighths_quarter",
+      "name": "Deux croches + noire",
+      "shortName": "2 cr + noire",
+      "category": "restsMixed",
+      "beatSpan": 2,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth",
+        "eighth",
+        "quarter"
+      ],
+      "valuesInBeats": [
+        0.5,
+        0.5,
+        1
+      ],
+      "iconText": "♪ ♪ ♩",
+      "description": "Autre figure très fréquente sur deux temps.",
+      "meterContext": "any",
+      "difficulty": "easy",
+      "aliases": [],
+      "tags": [
+        "2_beats"
+      ]
+    },
+    {
+      "id": "quarter_rest_two_sixteenths_eighth",
+      "name": "Soupir + deux doubles croches + croche",
+      "shortName": "Rest + 2 dbl + cr",
+      "category": "restsMixed",
+      "beatSpan": 2,
+      "subdivisionCount": 4,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "quarter_rest",
+        "sixteenth",
+        "sixteenth",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        1,
+        0.25,
+        0.25,
+        0.5
+      ],
+      "iconText": "𝄽 ♬ ♪",
+      "description": "Entrée tardive après un silence.",
+      "meterContext": "binary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "2_beats",
+        "rest"
+      ]
+    },
+    {
+      "id": "eighth_rest_two_sixteenths_eighth",
+      "name": "Soupir de croche + deux doubles croches + croche",
+      "shortName": "Rest cr + 2 dbl + cr",
+      "category": "restsMixed",
+      "beatSpan": 1.5,
+      "subdivisionCount": 4,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth_rest",
+        "sixteenth",
+        "sixteenth",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        0.5,
+        0.25,
+        0.25,
+        0.5
+      ],
+      "iconText": "𝄽 ♬ ♪",
+      "description": "Cellule syncopée avec départ sur le contretemps.",
+      "meterContext": "binary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "rest",
+        "syncopation"
+      ]
+    },
+    {
+      "id": "hemiola_3_over_2",
+      "name": "Hémiole 3 pour 2",
+      "shortName": "Hémiole 3:2",
+      "category": "advanced",
+      "beatSpan": 2,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "hemiola_quarter",
+        "hemiola_quarter",
+        "hemiola_quarter"
+      ],
+      "valuesInBeats": [
+        0.6666666666666666,
+        0.6666666666666666,
+        0.6666666666666666
+      ],
+      "iconText": "♩♩♩ 3:2",
+      "description": "Trois pulsations sur la durée de deux temps.",
+      "meterContext": "binary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "polyrhythm",
+        "atypical"
+      ]
+    },
+    {
+      "id": "hemiola_2_over_3",
+      "name": "Hémiole 2 pour 3",
+      "shortName": "Hémiole 2:3",
+      "category": "advanced",
+      "beatSpan": 1.5,
+      "subdivisionCount": 2,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "hemiola_halfbeat",
+        "hemiola_halfbeat"
+      ],
+      "valuesInBeats": [
+        0.75,
+        0.75
+      ],
+      "iconText": "♪♪ 2:3",
+      "description": "Deux pulsations sur la durée de trois subdivisions ternaires.",
+      "meterContext": "ternary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "polyrhythm",
+        "atypical"
+      ]
+    },
+    {
+      "id": "tresillo",
+      "name": "Tresillo",
+      "shortName": "Tresillo",
+      "category": "advanced",
+      "beatSpan": 2,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "dotted_eighth",
+        "dotted_eighth",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        0.75,
+        0.75,
+        0.5
+      ],
+      "iconText": "♪. ♪. ♪",
+      "description": "Motif afro-cubain fondamental.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [
+        "3-3-2"
+      ],
+      "tags": [
+        "latin",
+        "syncopation"
+      ]
+    },
+    {
+      "id": "cinquillo",
+      "name": "Cinquillo",
+      "shortName": "Cinquillo",
+      "category": "advanced",
+      "beatSpan": 2,
+      "subdivisionCount": 5,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth",
+        "sixteenth",
+        "eighth",
+        "sixteenth",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        0.5,
+        0.25,
+        0.5,
+        0.25,
+        0.5
+      ],
+      "iconText": "♪ ♬ ♪ ♬ ♪",
+      "description": "Motif syncopé courant dans les musiques latines.",
+      "meterContext": "binary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "latin",
+        "syncopation"
+      ]
+    },
+    {
+      "id": "three_three_two",
+      "name": "Figure 3-3-2",
+      "shortName": "3-3-2",
+      "category": "advanced",
+      "beatSpan": 2,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "three_eighth_group",
+        "three_eighth_group",
+        "two_eighth_group"
+      ],
+      "valuesInBeats": [
+        0.75,
+        0.75,
+        0.5
+      ],
+      "iconText": "3-3-2",
+      "description": "Découpage très courant dans les grooves modernes.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "groove",
+        "syncopation"
+      ]
+    },
+    {
+      "id": "clave_son",
+      "name": "Cellule de clave (son)",
+      "shortName": "Clave son",
+      "category": "advanced",
+      "beatSpan": 4,
+      "subdivisionCount": 5,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "hit",
+        "rest",
+        "hit",
+        "rest",
+        "hit"
+      ],
+      "valuesInBeats": [
+        0.5,
+        1.0,
+        0.5,
+        1.0,
+        1.0
+      ],
+      "iconText": "x · x · x",
+      "description": "Version simplifiée d’une cellule de clave sur 4/4.",
+      "meterContext": "binary",
+      "difficulty": "hard",
+      "aliases": [],
+      "tags": [
+        "latin",
+        "clave",
+        "pattern"
+      ]
+    },
+    {
+      "id": "gallop",
+      "name": "Galop",
+      "shortName": "Galop",
+      "category": "advanced",
+      "beatSpan": 1,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "eighth",
+        "sixteenth",
+        "sixteenth"
+      ],
+      "valuesInBeats": [
+        0.5,
+        0.25,
+        0.25
+      ],
+      "iconText": "♪ ♬",
+      "description": "Très utilisé en metal et hard rock.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [
+        "Galloping rhythm"
+      ],
+      "tags": [
+        "metal",
+        "groove"
+      ]
+    },
+    {
+      "id": "reverse_gallop",
+      "name": "Galop inversé",
+      "shortName": "Galop inversé",
+      "category": "advanced",
+      "beatSpan": 1,
+      "subdivisionCount": 3,
+      "referenceUnit": "quarter_note_equals_1_beat",
+      "tokens": [
+        "sixteenth",
+        "sixteenth",
+        "eighth"
+      ],
+      "valuesInBeats": [
+        0.25,
+        0.25,
+        0.5
+      ],
+      "iconText": "♬ ♪",
+      "description": "Version inverse du galop.",
+      "meterContext": "binary",
+      "difficulty": "medium",
+      "aliases": [],
+      "tags": [
+        "metal",
+        "groove"
+      ]
+    }
+  ]
+}
