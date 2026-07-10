@@ -122,29 +122,34 @@
 
   footer{text-align:center;font-family:VT323,monospace;font-size:15px;color:var(--ink-soft);margin-top:30px;letter-spacing:1px}
 
-  .row2{display:flex;gap:22px;flex-wrap:wrap}
+  .row2{display:flex;gap:28px;flex-wrap:wrap}
   .field{display:flex;flex-direction:column;gap:8px}
-  .field label{font-family:VT323,monospace;font-size:16px;color:var(--ink-soft)}
+  .field label{font-family:VT323,monospace;font-size:15px;color:var(--ink-soft);letter-spacing:.5px;text-transform:uppercase}
   select, input[type=number]{
-    font-family:VT323,monospace;font-size:18px;color:var(--ink);
-    border:none;border-radius:10px;padding:8px 12px;
+    font-family:VT323,monospace;font-size:19px;color:var(--ink);
+    border:none;border-radius:10px;padding:9px 14px;
     background:linear-gradient(180deg,#ffffff,#e3f2ff 60%,#cfeaff);
     box-shadow:0 3px 0 rgba(10,60,100,.2), inset 0 1px 0 rgba(255,255,255,1);
   }
-  input[type=number]{width:70px}
+  input[type=number]{width:80px}
+
+  .groupbox + .groupbox{margin-top:20px;padding-top:18px;border-top:1px dashed rgba(10,61,98,.2)}
+  .grouptitle{font-family:VT323,monospace;font-size:15px;color:var(--ink-soft);letter-spacing:1.5px;text-transform:uppercase;margin:0 0 10px}
+  .checkgrid{display:flex;flex-wrap:wrap;gap:10px}
+  .warn{font-family:VT323,monospace;font-size:16px;color:#c0455a;margin-top:14px;min-height:20px}
+
+  .transport{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .tempobar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px;padding-top:18px;border-top:1px dashed rgba(10,61,98,.2)}
+  .tempo{display:flex;align-items:center;gap:12px;font-family:VT323,monospace;font-size:18px}
   input[type=range]{width:220px;accent-color:#3ab6ff}
+  #bpmVal{color:var(--ink);min-width:76px;font-weight:bold}
+  .optrow{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
 
-  .checkgrid{margin-top:4px}
-  .warn{font-family:VT323,monospace;font-size:16px;color:#c0455a;margin-top:10px;min-height:20px}
-
-  .controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:18px}
-  .tempo{display:flex;align-items:center;gap:10px;font-family:VT323,monospace;font-size:18px}
-  #bpmVal{color:var(--ink);min-width:70px}
-  .toggle{display:flex;align-items:center;gap:8px;font-family:VT323,monospace;font-size:16px;cursor:none}
-
+  .score-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+  .score-title{font-family:'Press Start 2P',monospace;font-size:15px}
   .score-scroll{overflow-x:auto;padding:6px 0}
   svg#score{display:block}
-  .legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-family:VT323,monospace;font-size:15px;color:var(--ink-soft)}
+  .legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:16px;padding-top:14px;border-top:1px dashed rgba(10,61,98,.2);font-family:VT323,monospace;font-size:15px;color:var(--ink-soft)}
 </style>
 </head>
 <body>
@@ -189,13 +194,13 @@
 
   <div class="glasscard">
     <p class="card-title">2. FIGURES RYTHMIQUES</p>
-    <div class="checkgrid" id="durationPicker"></div>
+    <div id="durationPicker"></div>
     <div class="warn" id="warnMsg"></div>
   </div>
 
   <div class="glasscard">
-    <div class="fb-head" style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:10px">
-      <div class="chord-name" style="font-family:'Press Start 2P',monospace;font-size:16px">RYTHME GENERE</div>
+    <div class="score-head">
+      <div class="score-title">RYTHME GENERE</div>
     </div>
     <div class="score-scroll">
       <svg id="score" xmlns="http://www.w3.org/2000/svg"></svg>
@@ -206,17 +211,21 @@
       <div style="color:#3ab6ff">■ note en cours</div>
     </div>
 
-    <div class="controls">
+    <div class="transport">
       <button class="playbtn" id="genBtn">🎲 GENERER</button>
       <button class="playbtn" id="playBtn">▶ JOUER</button>
       <button class="playbtn stop" id="stopBtn" disabled>■ STOP</button>
+    </div>
+    <div class="tempobar">
       <div class="tempo">
         <span>TEMPO</span>
         <input type="range" id="bpm" min="40" max="208" value="96">
         <span id="bpmVal">96 bpm</span>
       </div>
-      <label class="toggle"><input type="checkbox" id="countIn" checked> compte à rebours</label>
-      <label class="toggle"><input type="checkbox" id="loopChk"> boucle</label>
+      <div class="optrow">
+        <button class="chk on" id="countIn"><span class="box"></span>compte à rebours</button>
+        <button class="chk" id="loopChk"><span class="box"></span>boucle</button>
+      </div>
     </div>
   </div>
 
@@ -298,20 +307,32 @@ function buildSigPicker(){
 function buildDurationPicker(){
   const el = document.getElementById('durationPicker');
   el.innerHTML = '';
-  const addChk = (key,label)=>{
-    const b = document.createElement('button');
-    b.className = 'chk' + (state.checked.has(key) ? ' on' : '');
-    b.innerHTML = '<span class="box"></span>' + label;
-    b.onclick = ()=>{
-      if (state.checked.has(key)) state.checked.delete(key); else state.checked.add(key);
-      b.classList.toggle('on');
-    };
-    el.appendChild(b);
+  const addGroup = (title, entries) => {
+    const box = document.createElement('div');
+    box.className = 'groupbox';
+    const h = document.createElement('p');
+    h.className = 'grouptitle';
+    h.textContent = title;
+    box.appendChild(h);
+    const grid = document.createElement('div');
+    grid.className = 'checkgrid';
+    entries.forEach(([key,label])=>{
+      const b = document.createElement('button');
+      b.className = 'chk' + (state.checked.has(key) ? ' on' : '');
+      b.innerHTML = '<span class="box"></span>' + label;
+      b.onclick = ()=>{
+        if (state.checked.has(key)) state.checked.delete(key); else state.checked.add(key);
+        b.classList.toggle('on');
+      };
+      grid.appendChild(b);
+    });
+    box.appendChild(grid);
+    el.appendChild(box);
   };
   const cells = meterCells(), longs = meterLongs();
-  Object.keys(longs).forEach(k=>addChk(k, longs[k].label));
-  Object.keys(cells).forEach(k=>addChk(k, cells[k].label));
-  addChk('fullrest', 'Silence de la mesure entière');
+  addGroup('Notes longues (plusieurs temps)', Object.keys(longs).map(k=>[k, longs[k].label]));
+  addGroup('Figures d\'un temps', Object.keys(cells).map(k=>[k, cells[k].label]));
+  addGroup('Cas particulier', [['fullrest', 'Silence de la mesure entière']]);
 }
 
 function generate(){
@@ -456,6 +477,7 @@ function drawScore(measures){
     const rowMeasures = measures.slice(r*perRow, r*perRow+perRow);
     const y0 = TOP_PAD + r*ROW_H;
     const staffY = y0 + STAFF_Y;
+    add('text', { x:LEFT_PAD, y:y0+10, 'font-family':'VT323,monospace', 'font-size':14, fill:'rgba(10,61,98,.55)' }).textContent = 'MESURE ' + (r+1);
     let x = LEFT_PAD;
     if (r===0){
       add('text', { x, y:staffY+7, 'font-family':'Press Start 2P,monospace', 'font-size':15, fill:'#0a3d62' }).textContent = state.sig.key.split('/')[0];
@@ -600,7 +622,7 @@ function startPlayback(){
   const beatDur = 60/bpm;
   playBeatDuration = beatDur;
   const beatsPerMeasure = state.sig.beats;
-  countInBeats = document.getElementById('countIn').checked ? beatsPerMeasure : 0;
+  countInBeats = document.getElementById('countIn').classList.contains('on') ? beatsPerMeasure : 0;
   const now = audioCtx.currentTime + 0.15;
   playStartTime = now;
   scheduled = [];
@@ -634,7 +656,7 @@ function startPlayback(){
       highlightRect.setAttribute('visibility','hidden');
     } else if (elapsedBeats >= totalBeats){
       highlightRect.setAttribute('visibility','hidden');
-      if (document.getElementById('loopChk').checked){
+      if (document.getElementById('loopChk').classList.contains('on')){
         stopPlayback();
         startPlayback();
         return;
@@ -672,6 +694,8 @@ document.getElementById('playBtn').onclick = ()=>{
   startPlayback();
 };
 document.getElementById('stopBtn').onclick = stopPlayback;
+document.getElementById('countIn').onclick = (e)=>{ e.currentTarget.classList.toggle('on'); };
+document.getElementById('loopChk').onclick = (e)=>{ e.currentTarget.classList.toggle('on'); };
 document.getElementById('bpm').oninput = (e)=>{ document.getElementById('bpmVal').textContent = e.target.value + ' bpm'; };
 document.getElementById('measureCount').onchange = (e)=>{
   let v = Math.max(1, Math.min(8, +e.target.value||4));
