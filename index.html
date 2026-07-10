@@ -186,6 +186,11 @@ const QUALITIES = [
   {key:'min7', label:'Mineur7',  suffix:'m7'},
   {key:'sus2', label:'Sus2',     suffix:'sus2'},
   {key:'sus4', label:'Sus4',     suffix:'sus4'},
+  {key:'6',    label:'6',        suffix:'6'},
+  {key:'m6',   label:'Mineur6',  suffix:'m6'},
+  {key:'dim',  label:'Diminué',  suffix:'dim'},
+  {key:'dim7', label:'Diminué7', suffix:'dim7'},
+  {key:'aug',  label:'Augmenté', suffix:'aug'},
 ];
 
 // Chaque forme est ancrée sur une corde de référence (rootString, index bas E=0..haut e=5)
@@ -195,34 +200,37 @@ const SHAPES = [
   {
     key:'C', label:'Forme Do (C)', rootString:1, rootOffset:3,
     templates:{
-      maj:[null,3,2,0,1,0], '7':[null,3,2,3,1,0]
+      maj:[null,3,2,0,1,0], '7':[null,3,2,3,1,0], aug:[null,3,2,1,1,0]
     }
   },
   {
     key:'A', label:'Forme La (A)', rootString:1, rootOffset:0,
     templates:{
       maj:[null,0,2,2,2,0], min:[null,0,2,2,1,0], '7':[null,0,2,0,2,0],
-      maj7:[null,0,2,1,2,0], min7:[null,0,2,0,1,0], sus2:[null,0,2,2,0,0], sus4:[null,0,2,2,3,0]
+      maj7:[null,0,2,1,2,0], min7:[null,0,2,0,1,0], sus2:[null,0,2,2,0,0], sus4:[null,0,2,2,3,0],
+      '6':[null,0,2,2,2,2], m6:[null,0,2,2,1,2], dim:[null,0,1,2,1,null], aug:[null,0,3,2,2,1]
     }
   },
   {
     key:'G', label:'Forme Sol (G)', rootString:0, rootOffset:3,
     templates:{
-      maj:[3,2,0,0,0,3], '7':[3,2,0,0,0,1]
+      maj:[3,2,0,0,0,3], '7':[3,2,0,0,0,1], aug:[3,2,1,0,0,3]
     }
   },
   {
     key:'E', label:'Forme Mi (E)', rootString:0, rootOffset:0,
     templates:{
       maj:[0,2,2,1,0,0], min:[0,2,2,0,0,0], '7':[0,2,0,1,0,0],
-      maj7:[0,2,1,1,0,0], min7:[0,2,0,0,0,0], sus2:[0,2,4,4,0,0], sus4:[0,2,2,2,0,0]
+      maj7:[0,2,1,1,0,0], min7:[0,2,0,0,0,0], sus2:[0,2,4,4,0,0], sus4:[0,2,2,2,0,0],
+      '6':[0,2,2,1,2,0], m6:[0,2,2,0,2,0], dim:[0,1,2,0,null,0], aug:[0,3,2,1,1,0]
     }
   },
   {
     key:'D', label:'Forme Ré (D)', rootString:2, rootOffset:0,
     templates:{
       maj:[null,null,0,2,3,2], min:[null,null,0,2,3,1], '7':[null,null,0,2,1,2],
-      maj7:[null,null,0,2,2,2], min7:[null,null,0,2,1,1], sus2:[null,null,0,2,3,0], sus4:[null,null,0,2,3,3]
+      maj7:[null,null,0,2,2,2], min7:[null,null,0,2,1,1], sus2:[null,null,0,2,3,0], sus4:[null,null,0,2,3,3],
+      '6':[null,null,0,2,0,2], m6:[null,null,0,2,0,1], dim:[null,null,0,1,3,1], dim7:[null,null,0,1,0,1], aug:[null,null,0,3,3,2]
     }
   }
 ];
