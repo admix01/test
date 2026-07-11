@@ -158,7 +158,7 @@
 
   .toolgrid{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start;margin-top:8px}
   @media (max-width:860px){ .toolgrid{grid-template-columns:1fr} }
-  .tool-sidebar{display:flex;flex-direction:column;gap:16px}
+  .tool-sidebar{display:flex;flex-direction:column;gap:16px;min-width:0}
   .tool-main{min-width:0}
   .tool-sidebar .glasscard, .tool-main .glasscard{margin-bottom:0}
   .tool-sidebar .pillgrid .pill{padding:9px 13px;font-size:15px}
@@ -1223,7 +1223,7 @@ function drawGlyphAt(parent, cx, staffY, tok, fontSize){
 }
 
 function figureIconSVG(cf){
-  const FS = 24, W = Math.max(50, 20*cf.tokens.length + 20), H = 38, staffY = 23;
+  const FS = 24, W = Math.min(130, Math.max(50, 20*cf.tokens.length + 20)), H = 38, staffY = 23;
   const svg = svgEl('svg', { viewBox:`0 0 ${W} ${H}`, width:W, height:H, class:'chkicon' });
   svg.appendChild(svgEl('line', { x1:6, y1:staffY, x2:W-6, y2:staffY, stroke:'#0a3d62', 'stroke-width':1.1, opacity:.45 }));
   const span = cf.beatSpan;
@@ -1321,40 +1321,151 @@ function generate(){
   return measures;
 }
 
-const QUARTER_PX = 78, FONT_SIZE = 38, MIN_TOKEN_PX = 19;
+// ---- partition dessinee a la main (portee 1 ligne, une mesure par rangee) ----
+// Les glyphes SMuFL/Bravura precomposes (note+hampe+crochet en un seul
+// caractere) ne peuvent pas etre ligaturees entre elles : chaque figure
+// flotte isolement et le rythme devient illisible. On dessine donc les
+// tetes, hampes, ligatures et silences a la main (comme une vraie partition
+// engraved), et on reserve Bravura aux petites icones de la liste de figures.
+const BEAT_PX = 66, ROW_H = 116, STAFF_Y_OFFSET = 50, TOP_PAD = 10, SIG_GUTTER = 44, LEFT_PAD = 14, RIGHT_PAD = 22;
+const NOTE_R = 6.3, STEM_TOP = -30, BEAM_STEP = 7, INK = '#0a3d62';
+
+const FLAG_HOOKS = { eighth:1, sixteenth:2, '32nd':3, '64th':4 };
+const BEAMABLE = new Set(['eighth','sixteenth','32nd','64th']);
+
 let rhythmLeafBoxes = [];
 let rhythmTimeline = [];
 
-function drawFigureGlyphs(parent, cf, figX, staffY, figW){
-  const span = cf.beatSpan;
-  const positions = [];
-  cf.tokens.forEach(tok => {
-    const cx = figX + (tok.t0/span) * figW;
-    drawGlyphAt(parent, cx, staffY, tok, FONT_SIZE);
-    positions.push(cx);
-    rhythmLeafBoxes.push({ x: figX + (tok.t0/span)*figW - 12, y: staffY - FONT_SIZE*0.85, w: Math.max(24, (tok.dur/span)*figW), h: FONT_SIZE*1.4 });
-    rhythmTimeline.push({ beatLen: tok.dur, isRest: tok.isRest });
+function drawNotehead(add, cx, cy, open, dotted){
+  add('ellipse', { cx, cy, rx:NOTE_R, ry:NOTE_R*0.78, fill: open?'none':INK, stroke:INK, 'stroke-width':1.8, transform:`rotate(-18 ${cx} ${cy})` });
+  if (dotted) add('circle', { cx:cx+NOTE_R*1.9, cy:cy-2, r:2.3, fill:INK });
+}
+function drawStem(add, cx, topY, botY){
+  add('line', { x1:cx, y1:botY, x2:cx, y2:topY, stroke:INK, 'stroke-width':1.8 });
+}
+function drawFlag(add, cx, topY, count){
+  for (let i=0;i<count;i++){
+    const y = topY + i*BEAM_STEP;
+    add('path', { d:`M ${cx} ${y} q 12 3 10 14 q -5 -7 -10 -7 Z`, fill:INK });
+  }
+}
+function drawQuarterRest(add, cx, cy){
+  add('path', {
+    d:`M ${cx+2.5} ${cy-11}
+       C ${cx-5} ${cy-7.5} ${cx+7} ${cy-5} ${cx-1} ${cy-1.5}
+       C ${cx-7} ${cy+1} ${cx+2.5} ${cy+1.5} ${cx-2} ${cy+4.5}
+       C ${cx-5} ${cy+6} ${cx+1} ${cy+7} ${cx+3.5} ${cy+11}`,
+    fill:'none', stroke:INK, 'stroke-width':2, 'stroke-linecap':'round', 'stroke-linejoin':'round'
   });
-  // liaisons (ties) : petit arc entre deux notes consecutives liees
+}
+function drawFlagRest(add, cx, cy, hooks){
+  add('line', { x1:cx-2.5, y1:cy-9, x2:cx+3.5, y2:cy+10, stroke:INK, 'stroke-width':1.8, 'stroke-linecap':'round' });
+  for (let i=0;i<hooks;i++){
+    const hx = cx-2.5+i*3, hy = cy-9+i*6;
+    add('path', { d:`M ${hx} ${hy} C ${hx+6} ${hy-1} ${hx+6} ${hy+5} ${hx+1.2} ${hy+5} C ${hx+3} ${hy+3} ${hx+3} ${hy+1.2} ${hx} ${hy} Z`, fill:INK });
+  }
+}
+function drawBarRest(add, cx, cy, hang, dotted){
+  add('rect', { x:cx-7, y: hang?cy+1:cy-7, width:14, height:6, fill:INK });
+  if (dotted) add('circle', { cx:cx+12, cy:cy-2, r:2.3, fill:INK });
+}
+function drawRestGlyph(add, cx, cy, level, dotted){
+  if (level === 'whole') drawBarRest(add, cx, cy, true, dotted);
+  else if (level === 'half') drawBarRest(add, cx, cy, false, dotted);
+  else if (level === 'quarter') { drawQuarterRest(add, cx, cy); if (dotted) add('circle', { cx:cx+8, cy:cy-2, r:2.3, fill:INK }); }
+  else drawFlagRest(add, cx, cy, FLAG_HOOKS[level] || 1);
+}
+
+// Regroupe les indices de tokens beambables consecutifs (coupe aux silences
+// et aux notes non subdivisees) — une ligature par groupe de 2+.
+function computeBeamGroups(tokens){
+  const groups = [];
+  let current = [];
+  tokens.forEach((tok, i) => {
+    if (!tok.isRest && BEAMABLE.has(tok.level)) current.push(i);
+    else { if (current.length) groups.push(current); current = []; }
+  });
+  if (current.length) groups.push(current);
+  return groups;
+}
+
+function drawFigureNotation(add, cf, figX, staffY, pxPerBeat, rowBoxes){
+  const positions = cf.tokens.map(tok => figX + tok.t0 * pxPerBeat);
+  const groups = computeBeamGroups(cf.tokens);
+  const beamGroupOf = new Map();
+  groups.forEach(g => { if (g.length >= 2) g.forEach(idx => beamGroupOf.set(idx, g)); });
+
+  let maxDepthUsed = 1;
+
+  cf.tokens.forEach((tok, i) => {
+    const cx = positions[i];
+    const w = Math.max(tok.dur * pxPerBeat, 6);
+    rowBoxes.push({ x:cx-8, y:staffY-46, w: Math.max(w, 16), h:64 });
+    rhythmTimeline.push({ beatLen: tok.dur, isRest: tok.isRest });
+
+    if (tok.isRest){
+      drawRestGlyph(add, cx, staffY, tok.level, tok.dotted);
+      return;
+    }
+    const open = tok.level === 'whole' || tok.level === 'half';
+    drawNotehead(add, cx, staffY, open, tok.dotted);
+    if (tok.level === 'whole') return; // pas de hampe
+
+    const group = beamGroupOf.get(i);
+    if (group){
+      drawStem(add, cx, staffY + STEM_TOP, staffY - 1);
+      maxDepthUsed = Math.max(maxDepthUsed, FLAG_HOOKS[tok.level] || 1);
+    } else if (BEAMABLE.has(tok.level)){
+      drawStem(add, cx, staffY + STEM_TOP, staffY - 1);
+      drawFlag(add, cx, staffY + STEM_TOP, FLAG_HOOKS[tok.level]);
+      maxDepthUsed = Math.max(maxDepthUsed, FLAG_HOOKS[tok.level]);
+    } else {
+      drawStem(add, cx, staffY + STEM_TOP, staffY - 1);
+    }
+  });
+
+  // ligatures : une ligne par niveau de profondeur, sur les runs contigus
+  groups.forEach(group => {
+    if (group.length < 2) return;
+    const maxDepth = Math.max(...group.map(i => FLAG_HOOKS[cf.tokens[i].level] || 1));
+    maxDepthUsed = Math.max(maxDepthUsed, maxDepth);
+    for (let depth = 1; depth <= maxDepth; depth++){
+      const y = staffY + STEM_TOP + (depth-1)*BEAM_STEP;
+      let runStart = null;
+      for (let k = 0; k <= group.length; k++){
+        const idx = group[k];
+        const has = idx !== undefined && (FLAG_HOOKS[cf.tokens[idx].level] || 1) >= depth;
+        if (has && runStart === null) runStart = k;
+        if (!has && runStart !== null){
+          const a = group[runStart], b = group[k-1];
+          if (a === b){
+            const dir = runStart === 0 ? 1 : -1;
+            add('line', { x1:positions[a], y1:y, x2:positions[a]+dir*9, y2:y, stroke:INK, 'stroke-width':3.4, 'stroke-linecap':'round' });
+          } else {
+            add('line', { x1:positions[a], y1:y, x2:positions[b], y2:y, stroke:INK, 'stroke-width':3.4, 'stroke-linecap':'round' });
+          }
+          runStart = null;
+        }
+      }
+    }
+  });
+
+  // liaisons (ties) : arc sous la portee entre deux notes liees consecutives
   cf.tokens.forEach((tok, i) => {
     if (!tok.tied || i === cf.tokens.length-1) return;
-    const x1 = positions[i]+6, x2 = positions[i+1]+2, yTie = staffY - FONT_SIZE*0.62;
-    const path = svgEl('path', {
-      d:`M ${x1} ${yTie} Q ${(x1+x2)/2} ${yTie-8} ${x2} ${yTie}`,
-      fill:'none', stroke:'#0a3d62', 'stroke-width':1.6,
-    });
-    parent.appendChild(path);
+    const x1 = positions[i]+2, x2 = positions[i+1]-2, yTie = staffY + 13;
+    add('path', { d:`M ${x1} ${yTie} Q ${(x1+x2)/2} ${yTie+9} ${x2} ${yTie}`, fill:'none', stroke:INK, 'stroke-width':1.5 });
   });
-  // crochet de tuplet
+
+  // crochet de tuplet, au-dessus des hampes/ligatures
   if (cf.tupletLabel){
-    const y = staffY - FONT_SIZE*0.95;
-    const x1 = figX+4, x2 = figX+figW-4;
-    parent.appendChild(svgEl('line', { x1, y1:y, x2, y2:y, stroke:'#0a3d62', 'stroke-width':1.2 }));
-    parent.appendChild(svgEl('line', { x1, y1:y, x2:x1, y2:y+6, stroke:'#0a3d62', 'stroke-width':1.2 }));
-    parent.appendChild(svgEl('line', { x1:x2, y1:y, x2, y2:y+6, stroke:'#0a3d62', 'stroke-width':1.2 }));
-    const lbl = svgEl('text', { x:(x1+x2)/2, y:y-4, 'text-anchor':'middle', 'font-family':'VT323,monospace', 'font-size':16, fill:'#0a3d62' });
+    const y = staffY + STEM_TOP - 4 - (maxDepthUsed-1)*BEAM_STEP;
+    const x1 = positions[0], x2 = positions[positions.length-1];
+    add('line', { x1, y1:y, x2, y2:y, stroke:INK, 'stroke-width':1.2 });
+    add('line', { x1, y1:y, x2:x1, y2:y+6, stroke:INK, 'stroke-width':1.2 });
+    add('line', { x1:x2, y1:y, x2, y2:y+6, stroke:INK, 'stroke-width':1.2 });
+    const lbl = add('text', { x:(x1+x2)/2, y:y-4, 'text-anchor':'middle', 'font-family':'VT323,monospace', 'font-size':16, fill:INK });
     lbl.textContent = cf.tupletLabel;
-    parent.appendChild(lbl);
   }
 }
 
@@ -1366,36 +1477,54 @@ function drawRhythmScore(measures){
   window.__rhythmLeafBoxes = rhythmLeafBoxes;
   window.__rhythmTimeline = rhythmTimeline;
 
-  const staffY = 78, H = 132;
-  let x = 24;
-  const barTop = staffY - 46, barBot = staffY + 30;
+  const add = (tag, attrs) => { const el = svgEl(tag, attrs); svg.appendChild(el); return el; };
 
-  svg.appendChild(svgEl('line', { x1:x, y1:barTop, x2:x, y2:barBot, stroke:'#0a3d62', 'stroke-width':2 }));
-
-  if (measures && measures.length){
-    measures.forEach(events => {
-      let mx = x;
-      events.forEach(cf => {
-        const figW = Math.max(cf.beatSpan * QUARTER_PX, cf.tokens.length * MIN_TOKEN_PX);
-        drawFigureGlyphs(svg, cf, mx, staffY, figW);
-        mx += figW;
-      });
-      x = mx;
-      svg.appendChild(svgEl('line', { x1:x, y1:barTop, x2:x, y2:barBot, stroke:'#0a3d62', 'stroke-width':2 }));
-    });
-  } else {
-    const emptyW = 420;
-    svg.appendChild(svgEl('line', { x1:x, y1:staffY, x2:x+emptyW, y2:staffY, stroke:'#0a3d62', 'stroke-width':1.2, opacity:.4 }));
-    const msg = svgEl('text', { x:x+emptyW/2, y:staffY+34, 'text-anchor':'middle', 'font-family':'VT323,monospace', 'font-size':16, fill:'var(--ink-soft)' });
-    msg.textContent = 'clique sur GENERER pour créer un rythme';
-    svg.appendChild(msg);
-    x += emptyW;
+  if (!measures || !measures.length){
+    const W = 460, H = 108, staffY = 60;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+    add('line', { x1:20, y1:staffY, x2:W-20, y2:staffY, stroke:INK, 'stroke-width':1.2, opacity:.35 });
+    add('text', { x:W/2, y:staffY+34, 'text-anchor':'middle', 'font-family':'VT323,monospace', 'font-size':16, fill:'var(--ink-soft)' }).textContent = 'clique sur GENERER pour créer un rythme';
+    return;
   }
 
-  const W = x + 24;
+  const qBeats = measureQBeats(rhythmState.sig);
+  const measureW = qBeats * BEAT_PX + 16;
+  const W = LEFT_PAD + SIG_GUTTER + measureW + RIGHT_PAD;
+  const H = measures.length * ROW_H + TOP_PAD;
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.setAttribute('width', W);
   svg.setAttribute('height', H);
+
+  const sigParts = rhythmState.sig.key.split('/');
+
+  measures.forEach((events, mi) => {
+    const y0 = TOP_PAD + mi * ROW_H;
+    const staffY = y0 + STAFF_Y_OFFSET;
+
+    add('text', { x:LEFT_PAD, y:y0+8, 'font-family':'VT323,monospace', 'font-size':13, fill:'rgba(10,61,98,.55)' }).textContent = 'MESURE ' + (mi+1);
+
+    if (mi === 0){
+      add('text', { x:LEFT_PAD, y:staffY+2, 'font-family':"'Press Start 2P',monospace", 'font-size':14, fill:INK }).textContent = sigParts[0];
+      add('text', { x:LEFT_PAD, y:staffY+18, 'font-family':"'Press Start 2P',monospace", 'font-size':14, fill:INK }).textContent = sigParts[1];
+    }
+
+    const x0 = LEFT_PAD + SIG_GUTTER;
+    const x1 = x0 + measureW - 10;
+    add('line', { x1:x0, y1:staffY, x2:x1, y2:staffY, stroke:INK, 'stroke-width':1.3, opacity:.55 });
+    add('line', { x1:x0, y1:staffY-38, x2:x0, y2:staffY+22, stroke:INK, 'stroke-width':2 });
+
+    let bx = x0 + 8;
+    events.forEach(cf => {
+      drawFigureNotation(add, cf, bx, staffY, BEAT_PX, rhythmLeafBoxes);
+      bx += cf.beatSpan * BEAT_PX;
+    });
+
+    const endX = x0 + measureW - 10;
+    add('line', { x1:endX, y1:staffY-38, x2:endX, y2:staffY+22, stroke:INK, 'stroke-width':2 });
+  });
+
   rhythmHighlightRect = null;
 }
 
