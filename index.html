@@ -127,6 +127,17 @@
 
   .fb-scroll{overflow-x:auto;padding-bottom:6px}
   svg.fretboard-svg{display:block;min-width:520px}
+  svg.fretboard-svg.scale-svg{min-width:900px}
+
+  .colordeg{
+    border:none;border-radius:100px;padding:9px 16px;cursor:pointer;
+    font-family:'Press Start 2P',monospace;font-size:12px;
+    background:linear-gradient(180deg,#ffffff,#e3f2ff 60%,#cfeaff);
+    color:var(--ink);box-shadow:0 3px 0 rgba(10,60,100,.2), inset 0 1px 0 rgba(255,255,255,1);
+    transition:transform .15s ease;
+  }
+  .colordeg:hover{transform:translateY(-2px)}
+  .colordeg.colored{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
 
   .legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-family:VT323,monospace;font-size:15px;color:var(--ink-soft)}
   .legend b{color:var(--ink)}
@@ -423,6 +434,12 @@
         </div>
 
         <div class="glasscard">
+          <p class="card-title">COULEURS DES NOTES</p>
+          <p class="subnote">Clique sur un degré pour lui donner une couleur (ex. la blue note) — reclique pour changer, jusqu'à revenir à la couleur par défaut.</p>
+          <div class="pillgrid" id="scaleColorPicker"></div>
+        </div>
+
+        <div class="glasscard">
           <p class="card-title">MES FAVORIS</p>
           <div class="favlist" id="favListGammes"></div>
         </div>
@@ -436,12 +453,9 @@
             <button class="favbtn" id="favBtnGammes">☆ favori</button>
           </div>
           <div class="fb-scroll">
-            <svg class="fretboard-svg" id="scaleFretboard" xmlns="http://www.w3.org/2000/svg"></svg>
+            <svg class="fretboard-svg scale-svg" id="scaleFretboard" xmlns="http://www.w3.org/2000/svg"></svg>
           </div>
-          <div class="legend">
-            <div><b style="color:#ff2f8f">●</b> fondamentale</div>
-            <div><b style="color:#3ab6ff">●</b> autre note de la gamme</div>
-          </div>
+          <div class="legend" id="scaleLegend"></div>
           <button class="playbtn" id="scalePlayBtn">♪ JOUER LA GAMME</button>
         </div>
 
@@ -1324,7 +1338,18 @@ triadRender();
 
 /* ===================== GAMMES ===================== */
 
-let scaleState = { root:0, scaleKey:'major', showDegrees:false, fullNeck:false };
+let scaleState = { root:0, scaleKey:'major', showDegrees:false, fullNeck:false, noteColors:{} };
+
+// Palette de couleurs assignables aux degres de la gamme (independant de la fondamentale,
+// qui garde toujours son propre style). "blue" est pre-assigne automatiquement a la blue
+// note des gammes blues (voir BLUE_NOTE_INTERVAL) mais reste modifiable/retirable au clic.
+const NOTE_COLOR_SWATCHES = [
+  { key:'blue',   hex:'#2f7dd6', label:'Blue note' },
+  { key:'orange', hex:'#d6812f', label:'Couleur 2' },
+  { key:'green',  hex:'#2fa35c', label:'Couleur 3' },
+  { key:'purple', hex:'#9257d6', label:'Couleur 4' },
+];
+const BLUE_NOTE_INTERVAL = { majorBlues:3, minorBlues:6 };
 
 function scaleFamilies(){
   const order = [];
@@ -1356,7 +1381,12 @@ function buildScaleStaticPickers(){
     });
     sel.appendChild(group);
   });
-  sel.onchange = ()=>{ scaleState.scaleKey = sel.value; scaleRender(); };
+  sel.onchange = ()=>{
+    scaleState.scaleKey = sel.value;
+    scaleState.noteColors = {};
+    if (BLUE_NOTE_INTERVAL[scaleState.scaleKey] !== undefined) scaleState.noteColors[BLUE_NOTE_INTERVAL[scaleState.scaleKey]] = 'blue';
+    scaleRender();
+  };
 
   const labelEl = document.getElementById('scaleLabelPicker');
   [['notes','Notes'],['degrees','Degrés (1, b3, 5…)']].forEach(([key,label])=>{
@@ -1398,8 +1428,8 @@ function drawScaleFretboard(){
   };
 
   const maxFret = scaleState.fullNeck ? 24 : 15;
-  const stringGap = 36, leftMargin = 54, fretGap = 44, topMargin = 24, bottomPad = 30;
-  const svgWidth = leftMargin + (maxFret+1)*fretGap + 18;
+  const stringGap = 54, leftMargin = 74, fretGap = 66, topMargin = 30, bottomPad = 40;
+  const svgWidth = leftMargin + (maxFret+1)*fretGap + 22;
   const svgHeight = topMargin + 5*stringGap + bottomPad;
   svg.setAttribute('viewBox', `0 0 ${svgWidth} ${svgHeight}`);
   svg.setAttribute('width', svgWidth);
@@ -1412,22 +1442,22 @@ function drawScaleFretboard(){
 
   for (let f=0; f<=maxFret; f++){
     const isNut = f===0;
-    add('line', { x1:fretX(f), y1:stringY(0), x2:fretX(f), y2:stringY(5), stroke: FB_INK, 'stroke-width': isNut ? 4.5 : 1.1, opacity: isNut?1:.45 });
+    add('line', { x1:fretX(f), y1:stringY(0), x2:fretX(f), y2:stringY(5), stroke: FB_INK, 'stroke-width': isNut ? 6 : 1.4, opacity: isNut?1:.45 });
   }
   const markerFrets = [3,5,7,9,15,17,19,21];
   for (let f=1; f<=maxFret; f++){
     const cx = (fretX(f-1)+fretX(f))/2;
-    if (markerFrets.includes(f)) add('circle', { cx, cy: topMargin+2.5*stringGap, r:3.6, fill:'#d8d8d8' });
+    if (markerFrets.includes(f)) add('circle', { cx, cy: topMargin+2.5*stringGap, r:5, fill:'#d8d8d8' });
     if (f===12 || f===24){
-      add('circle', { cx, cy: topMargin+1.5*stringGap, r:3.6, fill:'#d8d8d8' });
-      add('circle', { cx, cy: topMargin+3.5*stringGap, r:3.6, fill:'#d8d8d8' });
+      add('circle', { cx, cy: topMargin+1.5*stringGap, r:5, fill:'#d8d8d8' });
+      add('circle', { cx, cy: topMargin+3.5*stringGap, r:5, fill:'#d8d8d8' });
     }
-    if (f%2===1 || f===maxFret) add('text', { x:cx, y: topMargin+5*stringGap+16, 'text-anchor':'middle', 'font-family':FB_FONT, 'font-size':11, fill:'#888' }).textContent = f;
+    if (f%2===1 || f===maxFret) add('text', { x:cx, y: topMargin+5*stringGap+22, 'text-anchor':'middle', 'font-family':FB_FONT, 'font-size':14, fill:'#888' }).textContent = f;
   }
 
   for (let i=0;i<6;i++){
-    add('line', { x1:fretX(0), y1:stringY(5-i), x2:fretX(maxFret), y2:stringY(5-i), stroke:FB_INK, 'stroke-width': 0.7+i*0.3, opacity:.65 });
-    add('text', { x:12, y:stringY(5-i)+4, 'font-family':FB_FONT, 'font-size':12, fill:'#666' }).textContent = STRING_NAMES[i];
+    add('line', { x1:fretX(0), y1:stringY(5-i), x2:fretX(maxFret), y2:stringY(5-i), stroke:FB_INK, 'stroke-width': 0.9+i*0.4, opacity:.65 });
+    add('text', { x:14, y:stringY(5-i)+5, 'font-family':FB_FONT, 'font-size':15, fill:'#666' }).textContent = STRING_NAMES[i];
   }
 
   const intervalOf = note => (note - scaleState.root + 12) % 12;
@@ -1440,14 +1470,60 @@ function drawScaleFretboard(){
       const note = (STRING_OPEN[i]+f)%12;
       const iv = intervalOf(note);
       if (!inScale.has(iv)) continue;
-      const cx = f===0 ? fretX(0)-15 : (fretX(f-1)+fretX(f))/2;
+      const cx = f===0 ? fretX(0)-18 : (fretX(f-1)+fretX(f))/2;
       const cy = stringY(5-i);
       const isRoot = iv===0;
-      add('circle', { cx, cy, r:10, fill: isRoot ? FB_INK : '#ffffff', stroke:FB_INK, 'stroke-width':1.3 });
-      add('text', { x:cx, y:cy+3.5, 'text-anchor':'middle', 'font-family':FB_FONT, 'font-size':10.5, fill: isRoot?'#ffffff':FB_INK, 'font-weight':'600' })
+      const colorKey = scaleState.noteColors[iv];
+      const swatch = colorKey && NOTE_COLOR_SWATCHES.find(s=>s.key===colorKey);
+      const fill = isRoot ? FB_INK : (swatch ? swatch.hex : '#ffffff');
+      const textFill = isRoot || swatch ? '#ffffff' : FB_INK;
+      add('circle', { cx, cy, r:14, fill, stroke:FB_INK, 'stroke-width':1.6 });
+      add('text', { x:cx, y:cy+5, 'text-anchor':'middle', 'font-family':FB_FONT, 'font-size':13, fill:textFill, 'font-weight':'600' })
         .textContent = scaleState.showDegrees ? degreeOf[iv] : NOTE_NAMES[note];
     }
   }
+}
+
+function buildColorPicker(scale){
+  const el = document.getElementById('scaleColorPicker');
+  if (!el) return;
+  el.innerHTML = '';
+  scale.intervals.forEach((iv, idx)=>{
+    if (iv === 0) return; // la fondamentale garde son style dedie
+    const b = document.createElement('button');
+    b.className = 'colordeg';
+    const colorKey = scaleState.noteColors[iv];
+    const swatch = colorKey && NOTE_COLOR_SWATCHES.find(s=>s.key===colorKey);
+    if (swatch){ b.style.background = swatch.hex; b.classList.add('colored'); b.title = swatch.label + ' — reclique pour changer'; }
+    else { b.title = 'Cliquer pour colorer cette note'; }
+    b.textContent = scale.degrees[idx];
+    b.onclick = ()=>{
+      const order = [null, ...NOTE_COLOR_SWATCHES.map(s=>s.key)];
+      const cur = scaleState.noteColors[iv] || null;
+      const next = order[(order.indexOf(cur)+1) % order.length];
+      if (next) scaleState.noteColors[iv] = next; else delete scaleState.noteColors[iv];
+      drawScaleFretboard();
+      buildColorPicker(scale);
+      renderScaleLegend(scale);
+    };
+    el.appendChild(b);
+  });
+}
+
+function renderScaleLegend(scale){
+  const el = document.getElementById('scaleLegend');
+  if (!el) return;
+  el.innerHTML = '';
+  const addItem = (color, label, hollow) => {
+    const div = document.createElement('div');
+    div.innerHTML = '<b style="color:'+color+'">'+(hollow?'○':'●')+'</b> ' + label;
+    el.appendChild(div);
+  };
+  addItem(FB_INK, 'fondamentale');
+  addItem(FB_INK, 'autre note de la gamme', true);
+  const used = new Set();
+  scale.intervals.forEach(iv=>{ const c = scaleState.noteColors[iv]; if (c) used.add(c); });
+  NOTE_COLOR_SWATCHES.filter(s=>used.has(s.key)).forEach(s=>addItem(s.hex, s.label.toLowerCase()));
 }
 
 function scaleRender(){
@@ -1457,6 +1533,8 @@ function scaleRender(){
   document.getElementById('scaleFormula').textContent = '1 – ' + scale.degrees.slice(1).join(' – ') + (scale.aliases.length ? '  ·  alias : '+scale.aliases.join(', ') : '');
   document.getElementById('scaleDesc').textContent = scale.desc || '';
   drawScaleFretboard();
+  buildColorPicker(scale);
+  renderScaleLegend(scale);
   document.getElementById('scalePlayBtn').onclick = ()=>{
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const now = audioCtx.currentTime;
