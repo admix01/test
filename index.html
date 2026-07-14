@@ -2285,6 +2285,21 @@ function drawRhythmScore(measures){
 
     const x0 = LEFT_PAD + SIG_GUTTER;
     const x1 = x0 + measureW - 10;
+
+    // blocs de temps : un fond alterne + un numero par pulsation (noire en
+    // mesure simple, noire pointee en mesure composee) pour que chaque temps
+    // se distingue clairement du suivant, plutot que de ne compter que sur
+    // les ligatures des notes.
+    const pulseUnit = rhythmState.sig.feel === 'ternary' ? 1.5 : 1;
+    const blockCount = Math.round(qBeats / pulseUnit);
+    for (let bi = 0; bi < blockCount; bi++){
+      const bx0 = x0 + 8 + bi * pulseUnit * BEAT_PX;
+      const bw = pulseUnit * BEAT_PX;
+      const blockRect = add('rect', { x:bx0, y:staffY-38, width:bw, height:60, rx:6, fill: bi%2===0 ? 'rgba(58,182,255,.10)' : 'transparent' });
+      blockRect.setAttribute('pointer-events', 'none');
+      add('text', { x:bx0+bw/2, y:staffY+34, 'text-anchor':'middle', 'font-family':'VT323,monospace', 'font-size':13, fill:'#2b8fd6', opacity:.65 }).textContent = bi+1;
+    }
+
     add('line', { x1:x0, y1:staffY, x2:x1, y2:staffY, stroke:INK, 'stroke-width':1.3, opacity:.55 });
     add('line', { x1:x0, y1:staffY-38, x2:x0, y2:staffY+22, stroke:INK, 'stroke-width':2 });
 
