@@ -511,9 +511,11 @@
           <div class="transport">
             <button class="playbtn" id="genBtn">🎲 GENERER</button>
             <button class="playbtn" id="rhythmPlayBtn">▶ JOUER</button>
+            <button class="playbtn" id="practiceBtn">🥁 S'ENTRAINER</button>
             <button class="playbtn stop" id="stopBtn" disabled>■ STOP</button>
             <button class="playbtn" id="printBtn">🖨 IMPRIMER</button>
           </div>
+          <p class="subnote">« Jouer » fait entendre le rythme joué · « S'entraîner » ne fait entendre que le clic — joue ou tape le rythme toi-même par-dessus.</p>
           <div class="tempobar">
             <div class="tempo">
               <span>TEMPO</span>
@@ -523,10 +525,10 @@
             </div>
             <div class="optrow">
               <button class="chk on" id="countIn"><span class="box"></span>compte à rebours</button>
-              <button class="chk" id="loopChk"><span class="box"></span>boucle</button>
+              <button class="chk" id="loopModeBtn">↻ une fois</button>
             </div>
           </div>
-          <p class="subnote" id="measureHint">Astuce : clique sur une mesure pour la sélectionner, puis active « boucle » pour la répéter en boucle toute seule.</p>
+          <p class="subnote" id="measureHint">Astuce : clique sur une mesure pour la sélectionner, puis règle la boucle pour la répéter toute seule.</p>
         </div>
       </div>
     </div>
@@ -1888,7 +1890,13 @@ const rhythmState = {
   checked: new Set(DEFAULT_FIGURE_IDS),
   measuresData: null,
   selectedMeasure: null,
+  loopMode: 'once', // 'once' | 'loop' | 'keep' (regenere un nouveau rythme a chaque tour)
 };
+const LOOP_MODES = [
+  { key:'once', label:"↻ une fois" },
+  { key:'loop', label:'↻ boucle' },
+  { key:'keep', label:'↻ boucle + nouveau à chaque tour' },
+];
 
 function figuresForMeter(sig){
   return COMPILED_FIGURES.filter(f => f.meterContext === 'any' || f.meterContext === sig.feel);
@@ -2017,6 +2025,22 @@ function fallbackFigure(remaining){
     tokens: [{ name:'rest', dur:remaining, isRest:true, tied:false, level:m.level, dotted:m.dotted, t0:0, t1:remaining }],
   };
 }
+// Peut-on remplir exactement `ticks` (1 tick = 1/16 de temps) avec des sommes
+// (repetition permise) des durees du pool ? Memoisation simple par mesure —
+// adapte du "canFill" de 4four.io/rhythm/generator : evite de choisir une
+// figure qui laisserait un reste qu'aucune figure cochee ne peut completer
+// exactement (on ne retombe sur le silence de secours qu'en dernier recours).
+function canFillTicks(remainingTicks, tickPool, memo){
+  if (remainingTicks === 0) return true;
+  if (remainingTicks < 0) return false;
+  if (memo.has(remainingTicks)) return memo.get(remainingTicks);
+  memo.set(remainingTicks, false); // coupe-circuit anti-recursion infinie
+  let ok = false;
+  for (const t of tickPool){ if (canFillTicks(remainingTicks - t, tickPool, memo)){ ok = true; break; } }
+  memo.set(remainingTicks, ok);
+  return ok;
+}
+
 function generate(){
   const warn = document.getElementById('warnMsg');
   const pool = figuresForMeter(rhythmState.sig).filter(f => rhythmState.checked.has(f.id));
@@ -2025,22 +2049,29 @@ function generate(){
     return null;
   }
   warn.textContent = '';
-  const EPS = 1e-6;
+  const TICK = 16; // 1 temps de noire = 16 ticks (assez fin pour la 64e de note)
   const total = measureQBeats(rhythmState.sig);
+  const totalTicks = Math.round(total * TICK);
+  const tickPool = [...new Set(pool.map(f => Math.round(f.beatSpan * TICK)))];
   const measures = [];
   for (let m = 0; m < rhythmState.measures; m++){
-    let remaining = total;
+    let remainingTicks = totalTicks;
     const events = [];
     let guard = 0;
-    while (remaining > EPS && guard++ < 200){
-      const fits = pool.filter(f => f.beatSpan <= remaining + EPS);
-      if (fits.length){
-        const choice = fits[Math.floor(Math.random() * fits.length)];
+    while (remainingTicks > 0 && guard++ < 200){
+      const memo = new Map();
+      const fitsCleanly = pool.filter(f => {
+        const t = Math.round(f.beatSpan * TICK);
+        return t <= remainingTicks && canFillTicks(remainingTicks - t, tickPool, memo);
+      });
+      const usable = fitsCleanly.length ? fitsCleanly : pool.filter(f => Math.round(f.beatSpan * TICK) <= remainingTicks);
+      if (usable.length){
+        const choice = usable[Math.floor(Math.random() * usable.length)];
         events.push(choice);
-        remaining -= choice.beatSpan;
+        remainingTicks -= Math.round(choice.beatSpan * TICK);
       } else {
-        events.push(fallbackFigure(remaining));
-        remaining = 0;
+        events.push(fallbackFigure(remainingTicks / TICK));
+        remainingTicks = 0;
       }
     }
     measures.push(events);
@@ -2281,6 +2312,7 @@ function ensureRhythmHighlight(){
 
 let rhythmAudioScheduled = [];
 let rhythmPlaying = false;
+let rhythmPracticing = false;
 let rhythmRafId = null;
 
 function rhythmTone(time, dur, gainPeak, type, freq){
@@ -2305,6 +2337,7 @@ function stopRhythmPlayback(){
   if (rhythmRafId) cancelAnimationFrame(rhythmRafId);
   if (rhythmHighlightRect) rhythmHighlightRect.setAttribute('visibility','hidden');
   document.getElementById('rhythmPlayBtn').disabled = false;
+  document.getElementById('practiceBtn').disabled = false;
   document.getElementById('stopBtn').disabled = true;
 }
 
@@ -2324,11 +2357,11 @@ function updateMeasureHint(){
   const hint = document.getElementById('measureHint');
   if (!hint) return;
   hint.textContent = rhythmState.selectedMeasure===null
-    ? "Astuce : clique sur une mesure pour la sélectionner, puis active « boucle » pour la répéter en boucle toute seule."
-    : 'Mesure ' + (rhythmState.selectedMeasure+1) + ' sélectionnée — active « boucle » pour la répéter en boucle (reclique dessus pour désélectionner).';
+    ? "Astuce : clique sur une mesure pour la sélectionner, puis règle la boucle sur « boucle » pour la répéter toute seule."
+    : 'Mesure ' + (rhythmState.selectedMeasure+1) + ' sélectionnée — règle la boucle sur « boucle » pour la répéter (reclique dessus pour désélectionner).';
 }
 
-function startRhythmPlayback(){
+function startRhythmPlayback(practiceMode){
   if (!rhythmTimeline.length) return;
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   ensureRhythmHighlight();
@@ -2338,29 +2371,41 @@ function startRhythmPlayback(){
   const countInBeats = document.getElementById('countIn').classList.contains('on') ? qBeatsPerMeasure : 0;
   const now = audioCtx.currentTime + 0.15;
   rhythmAudioScheduled = [];
+  rhythmPracticing = !!practiceMode;
 
   const sel = rhythmState.selectedMeasure;
   const useSel = sel !== null && rhythmState.measuresData && rhythmState.measuresData[sel];
   const range = useSel ? measureTokenRange(sel) : { startIdx:0, endIdx:rhythmTimeline.length };
   const playTimeline = rhythmTimeline.slice(range.startIdx, range.endIdx);
   const playBoxes = rhythmLeafBoxes.slice(range.startIdx, range.endIdx);
+  const totalBeats = playTimeline.reduce((s,l)=>s+l.beatLen, 0);
 
   for (let b = 0; b < countInBeats; b++){
     rhythmTone(now + b*beatDur, 0.06, 0.25, 'square', b % qBeatsPerMeasure === 0 ? 1400 : 900);
   }
 
-  let beatCursor = 0;
-  playTimeline.forEach(leaf => {
-    const t = now + (countInBeats + beatCursor) * beatDur;
-    const isDown = Math.abs(beatCursor % qBeatsPerMeasure) < 0.001;
-    rhythmTone(t, 0.05, 0.13, 'square', isDown ? 1400 : 900);
-    if (!leaf.isRest) rhythmTone(t, 0.09, 0.3, 'triangle', 600);
-    beatCursor += leaf.beatLen;
-  });
-  const totalBeats = beatCursor;
+  if (practiceMode){
+    // clic de metronome regulier (un par temps de noire), sans jouer le rythme
+    // : l'utilisateur joue/tape le rythme affiche par-dessus le clic.
+    for (let b = 0; b < Math.ceil(totalBeats - 1e-6); b++){
+      const t = now + (countInBeats + b) * beatDur;
+      const isDown = b % qBeatsPerMeasure === 0;
+      rhythmTone(t, 0.06, 0.22, 'square', isDown ? 1400 : 900);
+    }
+  } else {
+    let beatCursor = 0;
+    playTimeline.forEach(leaf => {
+      const t = now + (countInBeats + beatCursor) * beatDur;
+      const isDown = Math.abs(beatCursor % qBeatsPerMeasure) < 0.001;
+      rhythmTone(t, 0.05, 0.13, 'square', isDown ? 1400 : 900);
+      if (!leaf.isRest) rhythmTone(t, 0.09, 0.3, 'triangle', 600);
+      beatCursor += leaf.beatLen;
+    });
+  }
 
   rhythmPlaying = true;
   document.getElementById('rhythmPlayBtn').disabled = true;
+  document.getElementById('practiceBtn').disabled = true;
   document.getElementById('stopBtn').disabled = false;
 
   function frame(){
@@ -2371,9 +2416,14 @@ function startRhythmPlayback(){
       rhythmHighlightRect.setAttribute('visibility','hidden');
     } else if (elapsedBeats >= totalBeats){
       rhythmHighlightRect.setAttribute('visibility','hidden');
-      if (document.getElementById('loopChk').classList.contains('on')){
+      if (rhythmState.loopMode === 'keep'){
         stopRhythmPlayback();
-        startRhythmPlayback();
+        const mNew = generate();
+        if (mNew){ rhythmState.measuresData = mNew; drawRhythmScore(mNew); startRhythmPlayback(rhythmPracticing); }
+        return;
+      } else if (rhythmState.loopMode === 'loop'){
+        stopRhythmPlayback();
+        startRhythmPlayback(rhythmPracticing);
         return;
       } else {
         stopRhythmPlayback();
@@ -2406,11 +2456,25 @@ document.getElementById('genBtn').onclick = () => {
 };
 document.getElementById('rhythmPlayBtn').onclick = () => {
   if (!rhythmState.measuresData){ document.getElementById('warnMsg').textContent = "Génère un rythme d'abord !"; return; }
-  startRhythmPlayback();
+  startRhythmPlayback(false);
+};
+document.getElementById('practiceBtn').onclick = () => {
+  if (!rhythmState.measuresData){ document.getElementById('warnMsg').textContent = "Génère un rythme d'abord !"; return; }
+  startRhythmPlayback(true);
 };
 document.getElementById('stopBtn').onclick = stopRhythmPlayback;
 document.getElementById('countIn').onclick = (e) => { e.currentTarget.classList.toggle('on'); };
-document.getElementById('loopChk').onclick = (e) => { e.currentTarget.classList.toggle('on'); };
+function updateLoopModeBtn(){
+  const b = document.getElementById('loopModeBtn');
+  const m = LOOP_MODES.find(m=>m.key===rhythmState.loopMode);
+  b.textContent = m.label;
+  b.classList.toggle('on', rhythmState.loopMode !== 'once');
+}
+document.getElementById('loopModeBtn').onclick = () => {
+  const idx = LOOP_MODES.findIndex(m=>m.key===rhythmState.loopMode);
+  rhythmState.loopMode = LOOP_MODES[(idx+1) % LOOP_MODES.length].key;
+  updateLoopModeBtn();
+};
 document.getElementById('bpm').oninput = (e) => { document.getElementById('bpmVal').textContent = e.target.value + ' bpm'; };
 document.getElementById('measureCount').onchange = (e) => {
   let v = Math.max(1, Math.min(8, +e.target.value || 4));
@@ -2440,6 +2504,7 @@ buildSigPicker();
 buildDurationPicker();
 drawRhythmScore(null);
 updateMeasureHint();
+updateLoopModeBtn();
 
 /* ===================== ENTRAINEMENT (quiz) ===================== */
 
