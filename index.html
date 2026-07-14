@@ -2262,19 +2262,27 @@ function drawRhythmScore(measures){
     const y0 = TOP_PAD + mi * ROW_H;
     const staffY = y0 + STAFF_Y_OFFSET;
 
-    const rowBg = add('rect', {
-      x:2, y:y0-2, width:W-4, height:ROW_H-4, rx:10,
-      fill: mi===rhythmState.selectedMeasure ? 'rgba(58,182,255,.14)' : 'transparent',
-      class:'measure-row', 'data-mi':mi,
-    });
-    rowBg.style.cursor = 'pointer';
-    rowBg.onclick = () => {
+    // Toute la rangee vit dans son propre <g> et porte le gestionnaire de
+    // clic dessus : sinon un clic qui tombe pile sur une notehead (dessinee
+    // par-dessus le rectangle de fond) ne remontait jamais jusqu'au clic
+    // "selectionner cette mesure".
+    const rowGroup = svgEl('g', { 'data-mi':mi });
+    svg.appendChild(rowGroup);
+    rowGroup.style.cursor = 'pointer';
+    rowGroup.onclick = () => {
       rhythmState.selectedMeasure = (rhythmState.selectedMeasure===mi) ? null : mi;
       document.querySelectorAll('.measure-row').forEach(r=>{
         r.setAttribute('fill', +r.dataset.mi===rhythmState.selectedMeasure ? 'rgba(58,182,255,.14)' : 'transparent');
       });
       updateMeasureHint();
     };
+    const add = (tag, attrs) => { const el = svgEl(tag, attrs); rowGroup.appendChild(el); return el; };
+
+    add('rect', {
+      x:2, y:y0-2, width:W-4, height:ROW_H-4, rx:10,
+      fill: mi===rhythmState.selectedMeasure ? 'rgba(58,182,255,.14)' : 'transparent',
+      class:'measure-row', 'data-mi':mi,
+    });
 
     add('text', { x:LEFT_PAD, y:y0+8, 'font-family':'VT323,monospace', 'font-size':13, fill:'rgba(10,61,98,.55)' }).textContent = 'MESURE ' + (mi+1);
 
@@ -2286,18 +2294,20 @@ function drawRhythmScore(measures){
     const x0 = LEFT_PAD + SIG_GUTTER;
     const x1 = x0 + measureW - 10;
 
-    // blocs de temps : un fond alterne + un numero par pulsation (noire en
-    // mesure simple, noire pointee en mesure composee) pour que chaque temps
-    // se distingue clairement du suivant, plutot que de ne compter que sur
-    // les ligatures des notes.
+    // blocs de temps : une case bien visible et separee par pulsation (noire
+    // en mesure simple, noire pointee en mesure composee) + son numero, pour
+    // que chaque temps se distingue clairement du suivant — meme fond partout,
+    // separes par un vrai espace (comme les cellules "beat" de 4four.io),
+    // plutot qu'une alternance qui ne montrait un bloc qu'un temps sur deux.
     const pulseUnit = rhythmState.sig.feel === 'ternary' ? 1.5 : 1;
     const blockCount = Math.round(qBeats / pulseUnit);
+    const blockGap = 5;
     for (let bi = 0; bi < blockCount; bi++){
-      const bx0 = x0 + 8 + bi * pulseUnit * BEAT_PX;
-      const bw = pulseUnit * BEAT_PX;
-      const blockRect = add('rect', { x:bx0, y:staffY-38, width:bw, height:60, rx:6, fill: bi%2===0 ? 'rgba(58,182,255,.10)' : 'transparent' });
+      const bx0 = x0 + 8 + bi * pulseUnit * BEAT_PX + blockGap/2;
+      const bw = pulseUnit * BEAT_PX - blockGap;
+      const blockRect = add('rect', { x:bx0, y:staffY-38, width:bw, height:60, rx:7, fill:'rgba(58,182,255,.13)', stroke:'rgba(58,182,255,.4)', 'stroke-width':1 });
       blockRect.setAttribute('pointer-events', 'none');
-      add('text', { x:bx0+bw/2, y:staffY+34, 'text-anchor':'middle', 'font-family':'VT323,monospace', 'font-size':13, fill:'#2b8fd6', opacity:.65 }).textContent = bi+1;
+      add('text', { x:bx0+bw/2, y:staffY+34, 'text-anchor':'middle', 'font-family':'VT323,monospace', 'font-size':13, fill:'#2b8fd6', opacity:.85 }).textContent = bi+1;
     }
 
     add('line', { x1:x0, y1:staffY, x2:x1, y2:staffY, stroke:INK, 'stroke-width':1.3, opacity:.55 });
