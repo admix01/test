@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="en-US" data-theme="Light"><head><meta charset="utf-8">
+<title>Rhythm Generator - 4four</title>
+<meta name="twitter:title" content="Rhythm Generator - 4four">
+<meta property="og:title" content="Rhythm Generator - 4four">
+<meta name="description" content="A random rhythm generator.  Pick a few short rhythms for the generator to arrange into a phrase.  Play along to the phrase, or practice with just a beat.  Available notations: Line, Staff, Kodaly, Takadimi, Gordon, Eastman, Numbers.  Similar to the Rhythm Randomizer.">
+<meta property="og:description" content="A random rhythm generator.  Pick a few short rhythms for the generator to arrange into a phrase.  Play along to the phrase, or practice with just a beat.  Available notations: Line, Staff, Kodaly, Takadimi, Gordon, Eastman, Numbers.  Similar to the Rhythm Randomizer.">
+<meta property="og:image" content="images/og-generator.png">
+<meta property="og:type" content="website">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="">
+<link rel="apple-touch-icon" type="image/png" href="images/logo-180x180.png">
+<link rel="icon" type="image/png" href="images/favicon-32x32.png">
+<script type="application/ld+json">[
+  {
+    "@context": "http://schema.org",
+    "@type": "WebApplication",
+    "name": "Generator",
+    "url": "https://4four.io/rhythm/generator",
+    "description": "A random rhythm generator.  Pick a few short rhythms for the generator to arrange into a phrase.  Play along to the phrase, or practice with just a beat.  Available notations: Line, Staff, Kodaly, Takadimi, Gordon, Eastman, Numbers.  Similar to the Rhythm Randomizer.",
+    "applicationCategory": "Music and Audio",
+    "applicationSubCategory": "Rhythm Trainer",
+    "applicationSuite": "4four.io Rhythm Learning Platform",
+    "about": {
+      "@type": "Thing",
+      "description": "rhythm, drill, exercise, trainer, learner, music theory"
+    },
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "softwareVersion": "132",
+    "softwareHelp": {
+      "@type": "CreativeWork",
+      "url": "https://4four.io/about"
+    },
+    "operatingSystem": "All",
+    "genre": "Music Education Technology"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Rhythm",
+        "item": "https://4four.io/rhythm"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Trainers",
+        "item": "https://4four.io/rhythm/trainers"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Generator"
+      }
+    ]
+  }
+]</script>
+<link id="cssCommon" rel="stylesheet" type="text/css" href="css/common.css">
+<link rel="stylesheet" type="text/css" href="css/slider-volume.css">
+<link rel="stylesheet" type="text/css" href="css/slider-tempo.css">
+<link rel="stylesheet" type="text/css" href="css/setup-bpb.css">
+<link id="cssMain" rel="stylesheet" type="text/css" href="css/generator.css">
+<link rel="stylesheet" type="text/css" href="css/generator-mq.css">
+<link id="cssCustom" rel="stylesheet" type="text/css" href="css/custom.css">
+<script>
+let theme
+
+theme = localStorage.getItem("theme")
+if (theme)
+  document.documentElement.setAttribute("data-theme", theme)
+else
+  localStorage.setItem("theme", document.documentElement.getAttribute("data-theme") || "Light")
+
+document.querySelector("meta[name=theme-color]").setAttribute("content",
+                                                              getComputedStyle(document.documentElement, null).getPropertyValue('--color-primary-fill'))
+</script>
+</head>
+<body id="body" data-viewtype="js"><div class="outer" id="outer"><div class="retracted" id="tinyLogoWrapper"><a href="/" id="tinyLogoAnchor"><img class="logoImg" src="images/logo.svg" alt="4four" id="tinyLogo">
+</a>
+</div>
+<div class="retracted" id="bannerWW"><div id="bannerW"><div class="guide" id="banner"></div>
+<div id="bannerX">✕</div>
+</div>
+</div>
+<div id="headingWrapper"><div class="widthLimit " id="heading"><div id="logoWrapper"><a href="/" id="logoAnchor"><div class="logoImg" id="logo"><svg viewBox="0 0 512 512"><rect ry="60" rx="60" style="fill:#b4f3ff;fill-opacity:1;stroke:#b4f3ff;stroke-width:20;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" id="rect2065" width="492" height="492" x="10" y="10"></rect>
+<path id="rect864" style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" d="M177.451 199.162h95.389v18.85h-95.389z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.0021" id="rect864-3" d="M193.744 177.744H309.16v18.85H193.744z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.0021" id="rect864-6" d="M222.229 156.327h111.249v18.85H222.229z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-7" d="M253.802 134.909h82.735v18.85h-82.735z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-5" d="M275.154 113.491h54.116v18.85h-54.116z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-35" d="M278.161 92.073h35.048v18.85h-35.048z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-62" d="M180.743 220.58h70.896v18.85h-70.896z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-9" d="M196.706 241.998h45.997v18.85h-45.997z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-1" d="M211.696 263.415h44.93v18.85h-44.93z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-2" d="M233.392 284.833h42.858v18.85h-42.858z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-70" d="M256.713 306.251h32.593v18.85h-32.593z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.0019" id="rect864-93" d="M226.58 434.757h30.777v18.85H226.58z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-60" d="M199.63 413.339h40.59v18.85h-40.59z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-626" d="M180.229 391.922h53.689v18.85h-53.689z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-18" d="M171.106 370.504h61.454v18.85h-61.454z"></path>
+<path transform="scale(1 -1)" style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-79" d="M204.686-346.518H312.47v18.85H204.686z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-20" d="M182.587 349.086h66.285v18.85h-66.285z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-23" d="M273.358 70.656h20.463v18.85h-20.463z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-75" d="M256.008 49.238h21.365v18.85h-21.365z"></path>
+<path style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" id="rect864-92" d="M239.285 27.82h13.543v18.85h-13.543z"></path>
+<path id="rect864-20-0" style="fill:#596a6c;fill-opacity:1;stroke-width:25.002" d="M288.196 349.086h52.698v18.85h-52.698z"></path>
+<path id="rect864-93-3" style="fill:#596a6c;fill-opacity:1;stroke-width:25.0019" d="M260.361 447.999h12.143v18.85h-12.143z"></path>
+</svg>
+</div>
+<div id="site">4four</div>
+</a>
+</div>
+<h1 id="title">Rhythm Generator</h1>
+<div id="menu"></div>
+</div>
+</div>
+<div class="wrapper fullWidth" id="wrapper"><div id="appWrapper"><div id="messageWrapper"><div class="guide emphasis" id="message">Loading...</div>
+<div class="guide emphasis" id="result"></div>
+<div id="score"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="data" data-demo="0" data-custom="0" data-embed="0" data-lone="0" data-staticdir="/static/132/" data-csrf="RHIRkMBI-Q1KMvBp8OzQyfHPtJvvrh4O0KPY" data-pagekey="" data-name="" data-avatar="" data-code="" data-usershortid="" data-flowpos="100" data-groups="0" data-ischild="0" data-isteacher="0" data-isparent="0" data-ispro="0" data-isold="0" data-timeformat="0" data-exteacher="0" data-logintype="" data-domain="4four.io" data-site="4four" data-exercise=""><div class="dataRhythm" data-name="one-quarter-note" data-alt="One Quarter Note" data-image="1x4n" data-length="1" data-words="" data-startswithrest="0"></div>
+<div class="dataRhythm" data-name="two-eighth-notes" data-alt="Two Eighth Notes" data-image="2x8n" data-length="1" data-words="" data-startswithrest="0"></div>
+<div class="dataRhythm" data-name="one-quarter-rest" data-alt="One Quarter Rest" data-image="1x4r" data-length="1" data-words="" data-startswithrest="1"></div>
+</div>
+<script src="js/utils.js" type="module"></script>
+<script src="js/common.js" type="module"></script>
+<script src="js/h.js" type="module"></script>
+<script src="js/vutils.js" type="module"></script>
+<script src="js/socket.io.min.js"></script>
+<script src="js/WebAudioFontPlayer.js" type="module"></script>
+<script src="js/generator.js" type="module"></script>
+<script type="module">
+  import * as page from "/static/132/js/generator.js"
+  page.run()
+</script>
+
+
+</body></html>

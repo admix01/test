@@ -1,0 +1,48 @@
+#optionBodyBpb {
+  display: flex;
+  flex-direction: column;
+}
+
+#optionBodyBbpTop {
+  display: flex;
+}
+
+#bpbControl {
+  display: flex;
+  align-items: center;
+}
+
+#bpbSig {
+  margin-left: 1rem;
+  display: flex;
+}
+
+#bpbG, #bpbNums {
+  height: 4rem;
+}
+
+.bpbNum {
+  color: var(--color-primary-text);
+  height: 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+}
+
+#bpbNumTop {
+  align-items: flex-end;
+}
+
+#bpbNumBot {
+  align-items: flex-start;
+}
+
+#compoundBpbW {
+  display: flex;
+  align-items: center;
+}
+
+#compoundBpb {
+  font-size: 1.2rem;
+  margin-right: 0.3rem;
+}

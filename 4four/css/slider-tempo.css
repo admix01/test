@@ -1,0 +1,101 @@
+#tempoWrapper {
+  grid-column: 1 / span 3;
+  grid-row: 3 / span 1;
+
+  display: grid;
+  grid-gap: 0;
+  /* 3 columns. */
+  grid-template-columns: 1fr 1fr 1fr;
+  /* 2 rows. */
+  grid-template-rows: 1.5rem minmax(min-content, max-content) minmax(min-content, max-content) minmax(min-content, max-content);
+
+  /* Because the rhythmsWrapper that follows has top padding. */
+  padding-bottom: 0;
+}
+
+#tempoHeading {
+  grid-column: 1 / span 2;
+  grid-row: 1 / span 1;
+
+  margin-bottom: 0.5rem;
+}
+
+#tempoButtons {
+  grid-column: 1 / span 3;
+  grid-row: 2 / span 1;
+
+  margin-bottom: 0.5rem;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+}
+
+.tempoButton {
+  /* margin: calc(0rem + 0.5vw); */
+  margin: 0.2rem;
+}
+
+div#tempoText {
+  grid-column: 3 / span 1;
+  grid-row: 1 / span 1;
+  margin-left: auto;
+}
+
+#tempoSlider {
+  grid-column: 1 / span 3;
+  grid-row: 3 / span 1;
+
+  width: 100%;
+  height: 2rem;
+  min-height: 2rem;
+  max-height: 2rem;
+  padding: 0;
+
+  display: flex;
+  flex-direction: row;
+}
+
+#tempoRange {
+  width: 100%;
+}
+
+.bpmHackW {
+  user-select: none;
+  margin-left: 0.5rem;
+
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr;
+}
+
+#bpmNum, .bpmHack, .volumeIconWrapper {
+  grid-row: 1 / 1;
+  grid-column: 1 / 1;
+
+  text-align: right;
+}
+
+#compoundBpmW {
+  grid-column: 1 / span 3;
+  grid-row: 4 / span 1;
+
+  font-size: 0.9rem;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  visibility: hidden;
+}
+
+#compoundBpm {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+#tempoWrapper.compound > #compoundBpmW {
+  visibility: visible;
+}
+
+#tempoSlider.retracted {
+  display: none;
+}
