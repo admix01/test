@@ -1,0 +1,84 @@
+:root {
+  /* origin: #89f1ff;  rgba(137, 241, 255, 0.66); #b4f3ff; */
+
+  /* 3rd, for notes on social media: yel #FFBD2E, green #2EFD52, purp #4573FC */
+
+  --color-primary-text: #596a6c;
+  --color-primary-rhythm: #808c90; /* 0.75 opacity of primary-text on a primary-fill bg */
+  --color-primary-text-locked: #ccd1d2; /* 0.3 opacity of primary-text on a primary-light bg */
+  --color-primary-border: #d9f8fd;
+  --color-primary-fill: #f5fafb;
+  --color-primary-light: white;
+
+  --color-secondary-text: #ff543d; /* #EB7100; */ /* #ffa95a; */
+  --color-secondary-fill: #ff9789; /* #ffc187; */
+
+  --color-emphasis-text: #4d5657;
+  --color-emphasis-border: #9eced5;
+  --color-emphasis-fill: #b4f3ff;   /* rgba(137, 241, 255, 0.66); */
+  --color-emphasis-fill-bright: #89f1ff;   /* rgba(137, 241, 255, 1); */
+
+  --color-nb: #f3ffb4;
+
+  --filter-color-primary-text: invert(38%) sepia(13%) saturate(466%) hue-rotate(138deg) brightness(96%) contrast(82%);
+
+  /* for use on filled bg */
+  --filter-color-primary-rhythm: invert(57%) sepia(6%) saturate(513%) hue-rotate(149deg) brightness(94%) contrast(91%);
+
+  --filter-color-emphasis-text: invert(38%) sepia(13%) saturate(466%) hue-rotate(138deg) brightness(96%) contrast(82%);
+
+  --filter-color-emphasis-rhythm: var(--filter-color-emphasis-text);
+
+  --filter-color-secondary-text: invert(49%) sepia(19%) saturate(7410%) hue-rotate(335deg) brightness(98%) contrast(106%);
+
+  --filter-color-secondary-fill: invert(66%) sepia(25%) saturate(1058%) hue-rotate(316deg) brightness(105%) contrast(101%);
+}
+
+[data-theme="Dark"] {
+  --color-transparent: rgb(0 0 0 / 0);
+
+  --color-primary-text: #b6babd;
+  --color-primary-rhythm: #9aa1a3; /* 0.75 opacity of primary-text on a primary-fill bg */
+  --color-primary-text-locked: #5f6d71; /* 0.3 opacity of primary-text on a primary-light bg */
+  --color-primary-border: #4b6267;
+  --color-primary-fill: #46555a;
+  --color-primary-light: #3a4c51;
+
+  --color-secondary-text: #ff9789; /* #db914e; */
+  --color-secondary-fill: #d88074; /* #ff9789 more saturated */ /* #ff543d; */ /* #ffc187; */
+
+  --color-emphasis-text: #253033;
+  --color-emphasis-border: #81a9b2;
+  --color-emphasis-fill: #6f9199;
+  --color-emphasis-fill-bright: #6ec1cc;   /* rgba(137, 241, 255, 0.8); */
+
+  --color-nb: #c5d39c; /* 0.75 of #f3ffb4; on primary light bg */
+
+  --color-link-underline: var(--color-emphasis-fill);
+
+  --color-logo-fg: black;
+  --color-logo-bg: var(--color-emphasis-fill-bright);
+
+  --filter-color-primary-text: invert(85%) sepia(7%) saturate(131%) hue-rotate(163deg) brightness(86%) contrast(93%);
+
+  --filter-color-primary-rhythm: invert(72%) sepia(6%) saturate(223%) hue-rotate(147deg) brightness(88%) contrast(92%);
+
+  --filter-color-emphasis-text: invert(13%) sepia(33%) saturate(360%) hue-rotate(146deg) brightness(99%) contrast(88%);
+
+  --filter-color-secondary-text: invert(66%) sepia(25%) saturate(1058%) hue-rotate(316deg) brightness(105%) contrast(101%);
+
+  --filter-color-secondary-fill: invert(65%) sepia(14%) saturate(1418%) hue-rotate(318deg) brightness(88%) contrast(92%);
+}
+
+.filter-color-emphasis {
+  /*
+  Not really emphasis, picked from blended emphasis.
+  filter: invert(67%) sepia(4%) saturate(946%) hue-rotate(224deg) brightness(96%) contrast(86%);
+   */
+  filter: invert(38%) sepia(13%) saturate(466%) hue-rotate(138deg) brightness(96%) contrast(82%);
+  opacity: 0.9;
+}
+
+.filter-color-emphasis-border {
+  filter: invert(80%) sepia(75%) saturate(147%) hue-rotate(145deg) brightness(88%) contrast(88%);
+}

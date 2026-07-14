@@ -1,0 +1,49 @@
+.bpmHackW {
+  user-select: none;
+  margin-left: 0.5rem;
+
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr;
+}
+
+#bpmNum, #bpmNumV, .bpmHack, .volumeIconWrapper {
+  grid-row: 1 / 1;
+  grid-column: 1 / 1;
+}
+
+.volumeSlider {
+  width: 100%;
+  max-width: 40rem;
+  height: 2rem;
+  min-height: 2rem;
+  max-height: 2rem;
+  margin-bottom: 0.75rem;
+  padding: 0 0.5rem 0 0.5rem;
+
+  display: flex;
+  flex-direction: row;
+}
+
+.volumeRange {
+  width: 100%;
+}
+
+.volumeIconButton.up,
+.volumeIconButton {
+  width: auto;
+  background-color: inherit;
+  border: none;
+  padding: 0;
+  display: flex;
+}
+
+img.volumeIcon {
+  pointer-events: none;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.volumeSlider.retracted {
+  display: none;
+}
